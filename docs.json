@@ -50,7 +50,6 @@
       {
         "group": "Setup",
         "pages": [
-          "self-hosted",
           "mobile"
         ]
       }

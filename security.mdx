@@ -3,7 +3,7 @@ title: "Security & encryption"
 description: "How Termique protects your credentials and what the master password does."
 ---
 
-Termique uses end-to-end encryption. Your credentials are encrypted on your device before they are stored locally or synced — neither the Termique servers nor your self-hosted API backend ever see plaintext passwords or private keys.
+Termique uses end-to-end encryption. Your credentials are encrypted on your device before they are stored locally or synced — the Termique servers never see plaintext passwords or private keys.
 
 ## Master password
 
@@ -39,7 +39,7 @@ Every credential stored by Termique is encrypted using the DEK. Encryption is pe
 
 If the master password is wrong, the DEK cannot be unwrapped and no credentials are accessible.
 
-## What the API backend stores
+## What Termique stores server-side
 
 | Data | Stored as |
 |------|-----------|
@@ -49,7 +49,7 @@ If the master password is wrong, the DEK cannot be unwrapped and no credentials 
 | Wrapped DEK | Encrypted ciphertext (wrapped with your master password key) |
 | Salt + verification blob | Stored to enable unlock on new devices |
 
-The API backend cannot decrypt credentials. It stores and returns ciphertext.
+Termique's servers cannot decrypt credentials. They store and return ciphertext.
 
 ## Locking the app
 
