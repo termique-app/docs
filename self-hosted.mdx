@@ -5,23 +5,10 @@ description: "Run your own Termique API backend for full data ownership."
 
 Termique's sync backend is designed to be self-hosted. Your hosts, groups, snippets, and encrypted credentials are stored on infrastructure you control.
 
-## Stack
-
-The API backend is a Node.js service:
-
-| Component | Technology |
-|-----------|-----------|
-| Framework | Hono 4 |
-| ORM | Drizzle ORM |
-| Database | PostgreSQL (+ pgvector for AI memory) |
-| Auth | Firebase Admin SDK |
-| Container | Docker |
-
-
 ## Prerequisites
 
-- PostgreSQL 15+ (with pgvector extension for AI features)
-- Docker (recommended) or Node.js 20+
+- PostgreSQL 15+
+- Docker
 - A Firebase project (for user authentication)
 - A Cloudflare Workers AI account (optional — for the hosted AI assistant)
 
@@ -43,7 +30,7 @@ CLOUDFLARE_AI_API_KEY=...
 
 `SHARING_SECRET` must be at least 32 characters. The server will refuse to start without it.
 
-## Run with Docker
+## Run
 
 ```bash
 docker run -d \
@@ -52,7 +39,6 @@ docker run -d \
   --env-file .env \
   ghcr.io/termique-app/api:latest
 ```
-
 
 ## Point the app at your backend
 

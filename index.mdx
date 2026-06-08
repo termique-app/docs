@@ -14,47 +14,36 @@ It combines the feel of a native terminal emulator with structured host manageme
     Connect to any SSH server with terminal, SFTP, and command audit logging built in.
   </Card>
   <Card title="End-to-end encryption" icon="lock">
-    Credentials are AES-256-GCM encrypted before they leave the renderer. The master password is derived locally via PBKDF2 and never sent to any server.
+    Credentials are encrypted on your device before they are stored or synced. Your master password never leaves your device.
   </Card>
   <Card title="Host management" icon="folder-tree">
     Organize servers with groups, tags, and color labels. Import from SSH config.
   </Card>
   <Card title="AI assistant" icon="sparkles">
-    Get shell command suggestions, debug connection issues, and automate repetitive tasks — either via the Termique backend or your own OpenAI-compatible endpoint.
+    Get shell command suggestions, debug connection issues, and automate repetitive tasks — either via the Termique backend or your own endpoint.
   </Card>
   <Card title="Team sharing" icon="users">
     Share hosts with your team via invite links. Command audit logs keep shared sessions accountable.
   </Card>
   <Card title="Self-hosted sync" icon="server">
-    Your data syncs to a Postgres backend you control. No cloud lock-in, no third-party servers.
+    Your data syncs to a backend you control. No cloud lock-in, no third-party servers.
   </Card>
 </CardGroup>
-
-## Surfaces
-
-Termique spans four surfaces, each in its own repository:
-
-| Surface | Stack |
-|---------|-------|
-| Desktop app | Tauri 2 + Rust + React |
-| API backend | Hono + Drizzle + Postgres |
-| Mobile companion | Flutter + Dart |
-| Landing page | Next.js + Tailwind |
 
 ## How it works
 
 <Steps>
   <Step title="Set a master password">
-    On first launch, you choose a master password. The app derives an encryption key using PBKDF2 and generates a random Data Encryption Key (DEK). The DEK is wrapped (encrypted) with your master password and stored locally. Your master password never leaves the device.
+    On first launch, you choose a master password. The app derives an encryption key and generates a random Data Encryption Key (DEK). The DEK is wrapped (encrypted) with your master password and stored locally. Your master password never leaves the device.
   </Step>
   <Step title="Add hosts">
     Save SSH connection details — hostname, port, username, and authentication method (password or key). Credentials are encrypted with the DEK before storage.
   </Step>
   <Step title="Connect">
-    Open a terminal session with one click. Termique decrypts the credential in Rust, opens an SSH connection via `russh`, and streams the PTY to an xterm.js terminal in the renderer.
+    Open a terminal session with one click. Termique decrypts the credential and opens an SSH connection to your server.
   </Step>
   <Step title="Sync (optional)">
-    Point the app at your self-hosted API backend to sync hosts, groups, snippets, and credentials across devices. The API never sees plaintext credentials — only encrypted blobs.
+    Point the app at your self-hosted API backend to sync hosts, groups, snippets, and credentials across devices. The backend never sees plaintext credentials — only encrypted blobs.
   </Step>
 </Steps>
 
