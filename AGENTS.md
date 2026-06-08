@@ -8,8 +8,7 @@
 - This is the Termique documentation site built on [Mintlify](https://mintlify.com)
 - Pages are MDX files with YAML frontmatter
 - Configuration lives in `docs.json`
-- Source repo: `git@github.com:termique-app/docs.git`
-- Related repos: `termique-app/termique` (desktop), `termique-app/termique-api` (backend), `termique-app/termique-mobile` (companion app), `termique-app/termique-landing-pages`
+- Related surfaces: desktop app, API backend, mobile companion app, landing page
 
 ## Terminology
 

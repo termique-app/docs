@@ -3,7 +3,7 @@ title: "Self-hosted backend"
 description: "Run your own Termique API backend for full data ownership."
 ---
 
-Termique's sync backend is open source and designed to be self-hosted. Your hosts, groups, snippets, and encrypted credentials are stored on infrastructure you control.
+Termique's sync backend is designed to be self-hosted. Your hosts, groups, snippets, and encrypted credentials are stored on infrastructure you control.
 
 ## Stack
 
@@ -17,7 +17,6 @@ The API backend is a Node.js service:
 | Auth | Firebase Admin SDK |
 | Container | Docker |
 
-Source: [`termique-app/termique-api`](https://github.com/termique-app/termique-api)
 
 ## Prerequisites
 
@@ -54,15 +53,6 @@ docker run -d \
   ghcr.io/termique-app/api:latest
 ```
 
-## Run without Docker
-
-```bash
-git clone https://github.com/termique-app/termique-api
-cd termique-api
-npm install
-npm run dev     # development
-npm start       # production
-```
 
 ## Point the app at your backend
 

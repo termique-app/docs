@@ -55,27 +55,14 @@
         ]
       }
     ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "GitHub",
-          "href": "https://github.com/termique-app",
-          "icon": "github"
-        }
-      ]
-    }
+    "global": {}
   },
   "logo": {
     "light": "/logo/dark.png",
     "dark": "/logo/light.png"
   },
   "navbar": {
-    "links": [
-      {
-        "label": "GitHub",
-        "href": "https://github.com/termique-app"
-      }
-    ],
+    "links": [],
     "primary": {
       "type": "button",
       "label": "Download",
@@ -94,9 +81,5 @@
       "vscode"
     ]
   },
-  "footer": {
-    "socials": {
-      "github": "https://github.com/termique-app"
-    }
-  }
+  "footer": {}
 }
