@@ -1,20 +1,69 @@
 ---
 title: "Introduction"
-description: "Welcome to your project"
+description: "Termique is a cross-platform SSH manager with end-to-end encryption, AI assistant, and a self-hosted sync backend."
 ---
 
-Write a short description of your product here. What it does, who it's for, and what they can accomplish with it.
+Termique is a desktop SSH manager built for infrastructure engineers who manage multiple servers across teams and environments.
 
-<Tip>
-  Ready to make this your own? Start by editing this page. Update your `docs.json` file to customize your site. Then fill out the [Quickstart](/quickstart) page.
-</Tip>
+It combines the feel of a native terminal emulator with structured host management, encrypted credential storage, and optional team sync — all behind a master password that never leaves your device.
 
-<Card title="Quickstart" icon="rocket" href="/quickstart">
-  This card links to the quickstart page in your project.
-</Card>
-<Card title="Components" icon="puzzle-piece" href="https://mintlify.com/docs/components">
-  Add cards, callouts, steps, tabs, and more to design and structure your pages.
-</Card>
-<Card title="Settings" icon="gear" href="https://mintlify.com/docs/organize/settings">
-  Set your site name, branding, and navigation in the `docs.json` file.
-</Card>
+## Key capabilities
+
+<CardGroup cols={2}>
+  <Card title="SSH connections" icon="terminal" href="/quickstart">
+    Connect to any SSH server with terminal, SFTP, and command audit logging built in.
+  </Card>
+  <Card title="End-to-end encryption" icon="lock">
+    Credentials are AES-256-GCM encrypted before they leave the renderer. The master password is derived locally via PBKDF2 and never sent to any server.
+  </Card>
+  <Card title="Host management" icon="folder-tree">
+    Organize servers with groups, tags, and color labels. Import from SSH config.
+  </Card>
+  <Card title="AI assistant" icon="sparkles">
+    Get shell command suggestions, debug connection issues, and automate repetitive tasks — either via the Termique backend or your own OpenAI-compatible endpoint.
+  </Card>
+  <Card title="Team sharing" icon="users">
+    Share hosts with your team via invite links. Command audit logs keep shared sessions accountable.
+  </Card>
+  <Card title="Self-hosted sync" icon="server">
+    Your data syncs to a Postgres backend you control. No cloud lock-in, no third-party servers.
+  </Card>
+</CardGroup>
+
+## Surfaces
+
+Termique spans four surfaces, each in its own repository:
+
+| Surface | Stack | Location |
+|---------|-------|----------|
+| Desktop app | Tauri 2 + Rust + React | [`termique-app/termique`](https://github.com/termique-app/termique) |
+| API backend | Hono + Drizzle + Postgres | [`termique-app/termique-api`](https://github.com/termique-app/termique-api) |
+| Mobile companion | Flutter + Dart | [`termique-app/termique-mobile`](https://github.com/termique-app/termique-mobile) |
+| Landing page | Next.js + Tailwind | [`termique-app/termique-landing-pages`](https://github.com/termique-app/termique-landing-pages) |
+
+## How it works
+
+<Steps>
+  <Step title="Set a master password">
+    On first launch, you choose a master password. The app derives an encryption key using PBKDF2 and generates a random Data Encryption Key (DEK). The DEK is wrapped (encrypted) with your master password and stored locally. Your master password never leaves the device.
+  </Step>
+  <Step title="Add hosts">
+    Save SSH connection details — hostname, port, username, and authentication method (password or key). Credentials are encrypted with the DEK before storage.
+  </Step>
+  <Step title="Connect">
+    Open a terminal session with one click. Termique decrypts the credential in Rust, opens an SSH connection via `russh`, and streams the PTY to an xterm.js terminal in the renderer.
+  </Step>
+  <Step title="Sync (optional)">
+    Point the app at your self-hosted API backend to sync hosts, groups, snippets, and credentials across devices. The API never sees plaintext credentials — only encrypted blobs.
+  </Step>
+</Steps>
+
+## Platform support
+
+| Platform | Status |
+|----------|--------|
+| macOS (Intel + Apple Silicon) | Supported |
+| Windows (x86_64) | Supported |
+| Linux (x86_64) | Supported |
+| iOS | In development (mobile companion) |
+| Android | In development (mobile companion) |

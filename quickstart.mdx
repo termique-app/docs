@@ -1,47 +1,66 @@
 ---
 title: "Quickstart"
-description: "Begin with a guide on the fastest path to a successful outcome"
+description: "Install Termique and connect to your first SSH server in under 5 minutes."
 ---
 
-Describe how someone begins using your product. What is the first thing they need to do? Are there any prerequisites?
-
-A quickstart should take someone from zero to using your product. They'll get a quick win and a sense of what they can accomplish.
+This guide walks you through installing Termique, setting up your master password, and connecting to your first SSH host.
 
 ## Prerequisites
 
-Before you begin, you must have:
+- macOS 12+, Windows 10+, or a Linux distribution with a desktop environment
+- An SSH server you can connect to (hostname, port, username, and password or key)
+- For team sync: a self-hosted API backend (see [self-hosted guide](#))
 
-- Requirement one (for example, Node.js 18+, a free account, an API key)
-- Requirement two (for example, a compatible device, a compatible browser, a compatible operating system)
-
-## Get started
+## Install
 
 <Steps>
-  <Step title="Install">
-    Describe how to install your product or sign up.
+  <Step title="Download the app">
+    Download the latest release for your platform from [termique.app](https://termique.app).
 
-    ```bash
-    npm install your-package
-    ```
+    | Platform | Download |
+    |----------|----------|
+    | macOS (Intel) | `Termique-x86_64.dmg` |
+    | macOS (Apple Silicon) | `Termique-aarch64.dmg` |
+    | Windows | `Termique-x86_64-setup.exe` |
+    | Linux | `Termique-x86_64.AppImage` |
   </Step>
-  <Step title="Configure">
-    Describe any setup or configuration needed before first use.
+  <Step title="Launch and set up">
+    Open Termique. On first launch, you'll see the master password setup screen.
 
-    ```bash
-    your-cli init
-    ```
+    Enter a strong master password. This password encrypts your Data Encryption Key (DEK), which in turn encrypts every credential. There is no password recovery — if you lose it, your credentials cannot be decrypted.
+
+    Store the password in a password manager.
   </Step>
-  <Step title="Run it">
-    Show the first thing a user does to see it working.
+  <Step title="Add your first host">
+    Once unlocked, click **Add host** in the sidebar.
 
-    ```bash
-    your-cli start
-    ```
+    Fill in:
+    - **Label** — a friendly name (e.g. `web-prod-01`)
+    - **Host** — the hostname or IP address
+    - **Port** — SSH port (default `22`)
+    - **Username** — the SSH user
+    - **Auth type** — `password` or `key`
+    - **Credential** — the password or private key
+
+    Click **Save**. The credential is encrypted and stored locally.
+  </Step>
+  <Step title="Connect">
+    Click the host in the sidebar. Termique opens a terminal session connected to your server.
+
+    You can open multiple sessions in tabs, resize the terminal, and disconnect from the session menu.
   </Step>
 </Steps>
 
-<Tip>
-  Give people a way to get help. This could be a link to a support page, a chat with a customer support agent, or a forum for your product.
+## Next steps
 
-  Example: Need help? Reach out to us at [support@yourcompany.com](mailto:support@yourcompany.com).
+| If you want to | See |
+|----------------|-----|
+| Import multiple hosts | [Host management](#) |
+| Organize hosts into groups | [Groups](#) |
+| Set up team sync | [Self-hosted backend](#) |
+| Save and share commands | [Snippets](#) |
+| Connect from your phone | [Mobile app](#) |
+
+<Tip>
+  Need help? Open an issue on [GitHub](https://github.com/termique-app/termique/issues) or check the [FAQ](#).
 </Tip>
