@@ -16,6 +16,43 @@
           "index",
           "quickstart"
         ]
+      },
+      {
+        "group": "Hosts & connections",
+        "pages": [
+          "hosts",
+          "groups",
+          "sftp"
+        ]
+      },
+      {
+        "group": "Terminal",
+        "pages": [
+          "terminal",
+          "snippets",
+          "ai-assistant"
+        ]
+      },
+      {
+        "group": "Keys & credentials",
+        "pages": [
+          "ssh-keys",
+          "security"
+        ]
+      },
+      {
+        "group": "Team features",
+        "pages": [
+          "sharing",
+          "command-logs"
+        ]
+      },
+      {
+        "group": "Setup",
+        "pages": [
+          "self-hosted",
+          "mobile"
+        ]
       }
     ],
     "global": {

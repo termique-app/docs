@@ -1,0 +1,43 @@
+---
+title: "Command logs"
+description: "Audit terminal sessions on a per-host basis."
+---
+
+Command logs record keystrokes and commands entered during a session. They are useful for auditing activity on shared hosts or tracking what was run during an incident.
+
+## Enable logging on a host
+
+1. Open the host edit form.
+2. Toggle **Command logging** on.
+3. Save.
+
+All sessions on that host will be logged from that point forward.
+
+## What is recorded
+
+Each log entry captures:
+
+| Field | Value |
+|-------|-------|
+| Timestamp | When the input was received |
+| Session ID | Which terminal session |
+| Kind | `input` (keystrokes) or `output` (terminal output, if enabled) |
+| Payload | The text content |
+| Pasted | Whether the input was pasted (vs. typed) |
+| Actor | The Termique user who ran the session |
+
+## View logs
+
+Open the host detail and click **Command logs**. Logs are listed chronologically. You can filter by session or date range.
+
+## Shared hosts
+
+If you accept a shared host with command logging enabled, the host owner can see your session logs. You are shown a consent prompt at the time you accept the invite. See [Sharing](/sharing).
+
+## Log retention
+
+Logs are stored in the API backend. You can delete logs older than a given date from the host's command log settings.
+
+## Privacy
+
+Command logs are stored on your self-hosted API backend. They are not end-to-end encrypted — the backend stores them in plaintext. Only use command logging on infrastructure you control.

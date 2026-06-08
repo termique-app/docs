@@ -1,0 +1,41 @@
+---
+title: "Sharing"
+description: "Share hosts with team members via invite."
+---
+
+You can share individual hosts with other Termique users. The recipient gets access to connect to the host using their own master password — your credential is re-encrypted for them at the point of acceptance.
+
+## Share a host
+
+1. Right-click a host in the sidebar and select **Share**.
+2. Enter the recipient's email address (they must have a Termique account).
+3. Click **Send invite**.
+
+The invite is sent through the API backend. The host payload is encrypted before it is stored.
+
+## Accept an invite
+
+Open the **Shares** panel (bell icon or sidebar). Pending invites are listed there.
+
+Click **Accept** on an invite. Termique:
+1. Downloads the encrypted host payload.
+2. Decrypts it using the sharing key.
+3. Re-encrypts the credential with your DEK.
+4. Saves the host to your local list.
+
+The shared host appears in your host list tagged as shared.
+
+## Command log consent
+
+If the host owner has command logging enabled, you will be asked to consent before accepting the invite. Accepting means your session activity on that host will be recorded and visible to the owner.
+
+You can decline — the invite is then rejected and the host is not added.
+
+## Revoke access
+
+If you shared a host, open **Shares** and find the outgoing invite. Click **Revoke**. The recipient's copy of the host is not automatically deleted from their local device — only the server-side share record is removed.
+
+## Limitations
+
+- You can share a host you own. You cannot re-share a host that was shared with you.
+- There is no permission level — a shared host gives the recipient full connect access.

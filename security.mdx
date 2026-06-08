@@ -1,0 +1,56 @@
+---
+title: "Security & encryption"
+description: "How Termique protects your credentials and what the master password does."
+---
+
+Termique uses end-to-end encryption. Your credentials are encrypted on your device before they are stored locally or synced — neither the Termique servers nor your self-hosted API backend ever see plaintext passwords or private keys.
+
+## Master password
+
+On first launch, you set a master password. This password:
+
+- Is used to derive an encryption key via PBKDF2 (with a random per-user salt).
+- Never leaves your device.
+- Is never sent to any server.
+- Cannot be recovered if lost — there is no reset mechanism.
+
+Store it in a password manager.
+
+## Data Encryption Key (DEK)
+
+At setup, Termique generates a random DEK. The DEK is:
+
+- Wrapped (encrypted) using the key derived from your master password.
+- Stored locally and, if sync is enabled, in the API backend as an encrypted blob.
+- Used to encrypt every credential (SSH passwords and private keys) before storage.
+
+When you unlock the app with your master password, the DEK is unwrapped in Rust and held in memory. It is never exposed to the renderer (JavaScript).
+
+## Credential encryption
+
+Every credential stored by Termique is encrypted with AES-256-GCM using the DEK. The encryption is performed in Rust (`src-tauri/src/crypto.rs`). The renderer passes the plaintext credential once to the Rust layer for encryption — it does not retain it after the call returns.
+
+## Unlock flow
+
+1. You enter your master password in the unlock screen.
+2. Termique derives the encryption key using PBKDF2 + your stored salt.
+3. The wrapped DEK is fetched from local storage (or the API on a fresh install) and unwrapped.
+4. A verification blob is checked to confirm the master password is correct before proceeding.
+
+If the master password is wrong, the DEK cannot be unwrapped and no credentials are accessible.
+
+## What the API backend stores
+
+| Data | Stored as |
+|------|-----------|
+| Hosts, groups, snippets | Plaintext (non-sensitive metadata) |
+| SSH passwords | AES-256-GCM ciphertext |
+| SSH private keys | AES-256-GCM ciphertext |
+| Wrapped DEK | AES-256-GCM ciphertext (wrapped with your master password key) |
+| Salt + verification blob | Stored to enable unlock on new devices |
+
+The API backend cannot decrypt credentials. It stores and returns ciphertext.
+
+## Locking the app
+
+Locking the app clears the DEK from memory. Credentials cannot be accessed until you unlock again with your master password.

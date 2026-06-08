@@ -1,0 +1,35 @@
+---
+title: "Snippets"
+description: "Save and run reusable shell commands across sessions."
+---
+
+Snippets are saved commands you can execute in any terminal session with one click. Use them for repetitive tasks like deploying, restarting services, or checking system status.
+
+## Create a snippet
+
+1. Open the **Snippets** panel in the sidebar.
+2. Click **New snippet**.
+3. Enter a **label** (e.g. `Restart nginx`) and the **command** (e.g. `sudo systemctl restart nginx`).
+4. Click **Save**.
+
+## Run a snippet
+
+Open a terminal session, then open the **Snippets** panel. Click a snippet to send the command to the active session. The command is inserted into the terminal as if you typed it.
+
+## Edit or delete a snippet
+
+Right-click a snippet and select **Edit** or **Delete**. Changes sync to your API backend.
+
+## Public snippets
+
+Browse community-shared snippets in the **Marketplace** tab of the Snippets panel. Search by keyword.
+
+To use a public snippet, click **Fork** — this copies it to your personal snippets where you can edit it before running.
+
+<Note>
+  Public snippets are read-only in the marketplace. Always review a snippet's command before running it on a production host.
+</Note>
+
+## Sync
+
+Snippets are synced to your API backend. They are not end-to-end encrypted — do not store credentials or sensitive values in snippet commands.

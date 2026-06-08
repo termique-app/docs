@@ -1,0 +1,40 @@
+---
+title: "SSH keys"
+description: "Generate and manage SSH key pairs for passwordless authentication."
+---
+
+Termique stores SSH key pairs locally (encrypted) and lets you use them when authenticating to hosts.
+
+## Generate a new key
+
+1. Open **Settings → SSH keys** and click **Generate key**.
+2. Choose an algorithm: `ed25519` (recommended) or `rsa`.
+3. Enter a **name** to identify the key.
+4. Click **Generate**. The private key is encrypted with your DEK and stored. The public key is shown so you can copy it to your server's `~/.ssh/authorized_keys`.
+
+## Import an existing key
+
+1. Open **Settings → SSH keys** and click **Import key**.
+2. Paste or drag in your private key (PEM or OpenSSH format).
+3. Enter a **name**.
+4. Click **Import**. The private key is encrypted before storage.
+
+<Warning>
+  Termique does not support passphrase-protected private keys at import time. Remove the passphrase with `ssh-keygen -p -f <key>` before importing.
+</Warning>
+
+## Use a key for authentication
+
+When adding or editing a host, set **Auth type** to `key` and select the key from the dropdown.
+
+## View the fingerprint
+
+Open **Settings → SSH keys**. Each key row shows its SHA-256 fingerprint. Use this to verify the key on the server side with `ssh-keygen -lf ~/.ssh/authorized_keys`.
+
+## Delete a key
+
+Open **Settings → SSH keys**, select the key, and click **Delete**. Hosts that reference the deleted key will fail to connect until you update their auth settings.
+
+## Sync
+
+SSH keys (encrypted private keys + public keys + metadata) are synced to your API backend. The private key blob is always encrypted — the server stores the ciphertext only.

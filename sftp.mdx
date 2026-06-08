@@ -1,0 +1,38 @@
+---
+title: "SFTP"
+description: "Transfer files to and from your servers using SFTP."
+---
+
+Termique includes an SFTP file manager built into every SSH connection. You can browse the remote filesystem, upload, download, and delete files without a separate tool.
+
+## Open SFTP
+
+With a host connected, click the **SFTP** tab in the session panel. Termique opens an SFTP connection to the same host using the same credential.
+
+## Navigate
+
+The file manager shows the remote filesystem starting from your home directory. Click a directory to open it. Use the breadcrumb at the top to go back.
+
+## Upload files
+
+Click **Upload** or drag files from your desktop into the file manager. Files are transferred to the current remote directory.
+
+## Download files
+
+Right-click a file and select **Download**. The file is saved to your local downloads directory.
+
+## Create a directory
+
+Click **New folder**, enter a name, and press Enter.
+
+## Delete
+
+Right-click a file or directory and select **Delete**. Directory deletion is recursive — all contents are removed.
+
+<Warning>
+  SFTP delete is permanent. There is no trash or undo.
+</Warning>
+
+## Permissions
+
+File permissions and ownership are shown in the file list. You cannot change permissions from the Termique SFTP panel — use the terminal for `chmod` and `chown`.

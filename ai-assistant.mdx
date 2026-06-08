@@ -1,0 +1,47 @@
+---
+title: "AI assistant"
+description: "Get shell command suggestions and debug connection issues in any terminal session."
+---
+
+The AI assistant is a chat panel available inside any terminal session. Ask it to generate commands, explain output, or diagnose connection problems.
+
+## Open the assistant
+
+Click the **AI** icon in the terminal session toolbar. The chat panel opens alongside the terminal.
+
+## What you can do
+
+- **Generate commands** — describe what you want to do; the assistant returns a shell command you can run with one click.
+- **Explain output** — paste terminal output and ask what it means.
+- **Debug issues** — describe a connection error or unexpected behavior.
+- **Automate tasks** — the assistant can propose a sequence of commands for multi-step operations.
+
+## Provider modes
+
+### Hosted (default)
+
+By default, requests go to the Termique API backend, which uses Cloudflare Workers AI. No API key required. Your conversation is processed on the backend and not stored.
+
+### BYO endpoint
+
+If you have an OpenAI-compatible endpoint (e.g. your own OpenAI account, Ollama, or another provider), you can point the assistant at it.
+
+1. Open **Settings → AI**.
+2. Enable **Custom endpoint**.
+3. Enter your endpoint URL and API key.
+
+The API key is stored encrypted (using your DEK) and is only sent to your specified endpoint — never to the Termique backend.
+
+<Warning>
+  API keys are stored encrypted locally and in your API backend as an encrypted blob. Do not share your API key or enter it into an untrusted build of Termique.
+</Warning>
+
+## Auto-execute
+
+The assistant can be configured to automatically run proposed commands without a manual confirmation click. This is off by default. Enable it in **Settings → AI → Auto-execute**.
+
+Use auto-execute only on non-production hosts. Commands run immediately — there is no undo.
+
+## Context
+
+The assistant has context about which host you are connected to (label, hostname, username). It does not have access to your terminal history unless you paste it into the chat.

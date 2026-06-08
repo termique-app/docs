@@ -1,0 +1,40 @@
+---
+title: "Mobile companion"
+description: "Access your hosts and snippets from iOS and Android."
+---
+
+The Termique mobile app is a companion to the desktop. It uses the same API backend and the same encryption — your hosts, groups, and snippets are available on your phone once you sign in and unlock.
+
+## Platforms
+
+| Platform | Status |
+|----------|--------|
+| iOS | In development |
+| Android | In development |
+
+The mobile app is in active development. Terminal (SSH) support is planned for a later phase.
+
+## What's available on mobile
+
+- View and connect to hosts (read-only on early builds)
+- Browse groups and snippets
+- View command logs
+- Accept share invites with push notifications
+
+## Install
+
+The mobile app will be available on the App Store (iOS) and Google Play (Android) when it reaches general availability.
+
+## Sync
+
+Mobile uses the same API backend as the desktop. Sign in with the same account, enter your master password to unlock, and your data is available immediately.
+
+The master password and DEK derivation are interoperable between desktop and mobile — credentials encrypted on desktop can be decrypted on mobile and vice versa.
+
+## Push notifications
+
+The mobile app supports push notifications for:
+- Incoming share invites
+- Command log activity on hosts you own
+
+Notification delivery requires the mobile app to be installed and notifications to be enabled in iOS/Android system settings.
