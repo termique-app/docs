@@ -22,6 +22,8 @@ Click the **AI** icon in the terminal session toolbar. The chat panel opens alon
 
 By default, requests go to the Termique API backend. No API key required. Your conversation is processed on the backend and not stored.
 
+Hosted usage has a daily limit: 15 prompts/day on Free, 100 prompts/day on [Pro](/plans). The limit resets at midnight UTC.
+
 ### BYO endpoint
 
 If you have an OpenAI-compatible endpoint (e.g. your own OpenAI account, Ollama, or another provider), you can point the assistant at it.
@@ -45,3 +47,7 @@ Use auto-execute only on non-production hosts. Commands run immediately — ther
 ## Context
 
 The assistant has context about which host you are connected to (label, hostname, username). It does not have access to your terminal history unless you paste it into the chat.
+
+## Memory
+
+On [Pro](/plans), the assistant can save memories — short notes about a host or your preferences — and recall them in later sessions. Free accounts don't have memory: each conversation starts fresh.

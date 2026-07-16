@@ -5,6 +5,10 @@ description: "Add, organize, and connect to SSH servers."
 
 A host is a saved SSH server entry. It stores the connection details and an encrypted credential so you can connect with one click.
 
+<Frame>
+  <img src="/images/hosts.png" alt="Hosts list showing saved SSH servers with live CPU and RAM" />
+</Frame>
+
 ## Add a host
 
 1. Click **Add host** in the sidebar (or press the `+` button next to the host list).
@@ -22,6 +26,10 @@ A host is a saved SSH server entry. It stores the connection details and an encr
 
 3. Click **Save**. The credential is encrypted with your DEK before it is stored.
 
+<Note>
+  Free accounts are limited to 3 hosts. Upgrade to [Pro](/plans) for unlimited hosts.
+</Note>
+
 ## Edit a host
 
 Right-click a host in the sidebar and select **Edit**, or open the host detail and click the edit icon. Changes are saved locally and synced to your API backend if sync is enabled.
@@ -34,6 +42,10 @@ Right-click a host and select **Delete**. This removes the entry from local stor
 
 Click a host in the sidebar. Termique opens a terminal session. The credential is decrypted and used to establish the SSH connection — it is never stored or logged in plaintext.
 
+<Frame>
+  <img src="/images/host-detail.png" alt="Host detail page showing connection info, sharing, command logging, and monitoring" />
+</Frame>
+
 ## Tags
 
 Tags are free-form strings attached to a host. Use them to filter the host list. A host can have multiple tags, e.g. `production`, `aws`, `us-east-1`.
@@ -41,3 +53,7 @@ Tags are free-form strings attached to a host. Use them to filter the host list.
 ## Shared hosts
 
 Hosts shared with you by a team member appear in the host list after you accept the invite. See [Sharing](/sharing) for details.
+
+## Monitoring
+
+Install the Termique monitoring agent on a host's server to see live CPU, RAM, and disk usage, and set up alerts. See [Monitoring](/monitoring).

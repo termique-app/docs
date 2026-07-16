@@ -3,27 +3,33 @@ title: "Mobile companion"
 description: "Access your hosts and snippets from iOS and Android."
 ---
 
-The Termique mobile app is a companion to the desktop. It uses the same API backend and the same encryption — your hosts, groups, and snippets are available on your phone once you sign in and unlock.
+The Termique mobile app is a companion to the desktop. It uses the same API backend and the same encryption — your hosts, groups, snippets, and SSH sessions are available on your phone once you sign in and unlock.
 
 ## Platforms
 
 | Platform | Status |
 |----------|--------|
-| iOS | In development |
-| Android | In development |
-
-The mobile app is in active development. Terminal (SSH) support is planned for a later phase.
+| iOS | Available on the App Store |
+| Android | Available on Google Play |
 
 ## What's available on mobile
 
-- View and connect to hosts (read-only on early builds)
-- Browse groups and snippets
-- View command logs
-- Accept share invites with push notifications
+- Add, edit, and connect to hosts
+- Full SSH terminal sessions
+- SFTP file browsing and transfer
+- Groups and snippets (create, edit, run)
+- Generate or import SSH keys
+- AI assistant
+- Command log viewing
+- Monitoring alert rules, with push notifications for hosts with the monitoring agent installed
+- Accept and manage share invites
 
 ## Install
 
-The mobile app will be available on the App Store (iOS) and Google Play (Android) when it reaches general availability.
+| Platform | Link |
+|----------|------|
+| iOS | [App Store](https://apps.apple.com/us/app/termique/id6773997253) |
+| Android | [Google Play](https://play.google.com/store/apps/details?id=app.termique.mobile) |
 
 ## Sync
 
@@ -33,8 +39,6 @@ The master password and DEK derivation are interoperable between desktop and mob
 
 ## Push notifications
 
-The mobile app supports push notifications for:
-- Incoming share invites
-- Command log activity on hosts you own
+The mobile app supports push notifications for monitoring alerts — when a host with the monitoring agent installed crosses an alert rule's threshold (CPU, RAM, or disk), you get a push notification. Tapping it opens the alert rules screen for that host.
 
 Notification delivery requires the mobile app to be installed and notifications to be enabled in iOS/Android system settings.

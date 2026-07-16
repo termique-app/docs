@@ -22,15 +22,27 @@ This guide walks you through installing Termique, setting up your master passwor
     | Windows | [termique.app/download/windows](https://termique.app/download/windows) |
     | Linux | [termique.app/download/linux](https://termique.app/download/linux) |
   </Step>
-  <Step title="Launch and set up">
-    Open Termique. On first launch, you'll see the master password setup screen.
+  <Step title="Sign in">
+    Open Termique and click **Sign in with browser**. This opens your default browser to complete sign-in, then returns you to the app.
 
-    Enter a strong master password. This password encrypts your Data Encryption Key (DEK), which in turn encrypts every credential. There is no password recovery — if you lose it, your credentials cannot be decrypted.
+    <Frame>
+      <img src="/images/login.png" alt="Termique sign-in screen with the Sign in with browser button" />
+    </Frame>
+  </Step>
+  <Step title="Complete onboarding">
+    On first launch, a short setup wizard walks you through:
 
-    Store the password in a password manager.
+    1. **Welcome** — a quick intro to Termique.
+    2. **Master password** — enter a strong master password. This password encrypts your Data Encryption Key (DEK), which in turn encrypts every credential. There is no password recovery — if you lose it, your credentials cannot be decrypted. Store it in a password manager.
+    3. **Theme** — pick Light, Dark, or System. You can change this later in Settings.
+    4. **Plans** — compare Free and Pro. Everyone starts on Free; upgrade now or later from Settings.
+
+    <Frame>
+      <img src="/images/master-password-setup.png" alt="Create master password screen with password strength meter" />
+    </Frame>
   </Step>
   <Step title="Add your first host">
-    Once unlocked, click **Add host** in the sidebar.
+    You'll land on the **Dashboard**. Click **Add Host**.
 
     Fill in:
     - **Label** — a friendly name (e.g. `web-prod-01`)
@@ -53,12 +65,12 @@ This guide walks you through installing Termique, setting up your master passwor
 
 | If you want to | See |
 |----------------|-----|
-| Import multiple hosts | [Host management](#) |
-| Organize hosts into groups | [Groups](#) |
-
-| Save and share commands | [Snippets](#) |
-| Connect from your phone | [Mobile app](#) |
+| See an overview of your hosts and activity | [Dashboard](/dashboard) |
+| Add and organize more hosts | [Hosts](/hosts) |
+| Organize hosts into groups | [Groups](/groups) |
+| Save and share commands | [Snippets](/snippets) |
+| Connect from your phone | [Mobile companion](/mobile) |
 
 <Tip>
-  Need help? Check the [FAQ](#) or contact support at [termique.app](https://termique.app).
+  Need help? Contact support at [support@termique.app](mailto:support@termique.app).
 </Tip>

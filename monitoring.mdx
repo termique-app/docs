@@ -1,0 +1,85 @@
+---
+title: "Monitoring"
+description: "Track CPU, RAM, and disk usage on your hosts, and get alerted when a threshold is crossed."
+---
+
+Termique can install a lightweight agent on your Linux server to report CPU, RAM, and disk usage back to your account. Metrics update every 30 seconds. You can set alert rules to get notified when usage crosses a threshold — or when a server stops reporting entirely.
+
+## Install the agent
+
+1. Open a host's detail view and find the **Monitoring** section.
+2. Click **Generate token**.
+3. Review what the agent collects, then click **Agree & continue**. Termique generates a one-time install command.
+4. Run the command on your server:
+   - Click **Run on `<host>`** to execute it automatically over an open SSH session, or
+   - Copy the command and run it manually over your own connection.
+
+<Note>
+  The agent token is shown once. Expand **Manual setup — show token** before closing the dialog if you need it, or generate a new one later.
+</Note>
+
+The agent connects within about 30 seconds. Once it checks in, the Monitoring section shows **Agent connected — metrics are flowing** and live CPU, RAM, and disk tiles for that host.
+
+## What the agent collects
+
+- CPU, RAM, and disk usage, every 30 seconds.
+- Nothing else — no file contents, command output, or credentials.
+- The agent only sends data outward. It never accepts inbound connections.
+
+The install script writes a config file holding an opaque token at `~/.config/termique-agent/config.toml` (`chmod 600`) and registers a systemd service.
+
+## View metrics
+
+- **Host detail** — the Monitoring section on a host shows live CPU/RAM/disk tiles, color-coded (green under 70%, amber 70–89%, red 90%+).
+- **Monitoring page** — lists every paired server, online servers first, each with a one-hour trend sparkline per metric. Click a server to see its full metrics history.
+
+A server counts as online if it has reported within the last 2 minutes.
+
+<Frame>
+  <img src="/images/monitoring.png" alt="Monitoring page listing paired servers with live CPU, RAM, and disk sparklines" />
+</Frame>
+
+Click a server to see its full history, live values, and system details (IP, OS, memory, disk, uptime):
+
+<Frame>
+  <img src="/images/monitoring-detail.png" alt="Server monitoring detail page showing CPU history chart and live CPU, RAM, disk gauges" />
+</Frame>
+
+## Alert rules
+
+Add an alert rule to get notified when a server crosses a threshold:
+
+| Field | Options |
+|-------|---------|
+| Metric | CPU, RAM, Disk, or Offline |
+| Threshold | 1–99% (not applicable to Offline — that fires after 2 minutes with no report) |
+| Cooldown | 5 min – 24 h — minimum time between repeat alerts for the same rule |
+| Enabled | On/off toggle |
+
+Each server can have up to 20 alert rules. Manage rules from the host's Monitoring section on desktop, or from a paired server's **Alerts** screen on mobile.
+
+## Notifications
+
+Desktop shows alerts only while Termique is running. The mobile app receives push notifications for alerts even when the desktop app is closed — tapping one opens the alert rules screen for that server.
+
+<Note>
+  Background push notifications (alerts delivered while the desktop app is closed) require a Pro subscription.
+</Note>
+
+## Revoke or reinstall
+
+- **Revoke** — stops the agent from reporting within 30 seconds. The agent keeps running on the server until you remove it. Uninstall with:
+
+  ```bash
+  curl -fsSL https://get.termique.app/uninstall | sh
+  ```
+
+- **Reinstall** — revokes the current token and generates a new one, skipping the terms review since you've already agreed once.
+
+## Data retention
+
+Raw metrics are kept for 24 hours. Rolled-up history (5-minute, hourly, and daily aggregates) is kept longer on Pro accounts than on Free.
+
+## Shared servers
+
+If a host was shared with you and the owner installed the monitoring agent, you can view its metrics but not manage its alert rules or revoke its token. See [Sharing](/sharing).

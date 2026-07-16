@@ -14,7 +14,11 @@ On first launch, you set a master password. This password:
 - Is never sent to any server.
 - Cannot be recovered if lost — there is no reset mechanism.
 
-Store it in a password manager.
+Store it in a password manager. You can change it later from **Settings → Security**.
+
+<Frame>
+  <img src="/images/settings.png" alt="Settings Security tab showing account, master password, and Touch ID" />
+</Frame>
 
 ## Data Encryption Key (DEK)
 
@@ -38,6 +42,18 @@ Every credential stored by Termique is encrypted using the DEK. Encryption is pe
 4. A verification blob is checked to confirm the master password is correct before proceeding.
 
 If the master password is wrong, the DEK cannot be unwrapped and no credentials are accessible.
+
+<Frame>
+  <img src="/images/unlock.png" alt="Unlock screen prompting for the master password" />
+</Frame>
+
+## Failed attempts
+
+After 5 failed unlock attempts, Termique locks the unlock screen for 5 minutes. This applies regardless of which device or password you're trying — it protects against brute-force guessing of your master password.
+
+<Frame>
+  <img src="/images/lockout.png" alt="Lockout screen showing a countdown after too many failed attempts" />
+</Frame>
 
 ## What Termique stores server-side
 
