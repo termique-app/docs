@@ -18,7 +18,7 @@ A host is a saved SSH server entry. It stores the connection details and an encr
    |-------|-------------|
    | **Label** | A friendly name, e.g. `web-prod-01` |
    | **Host** | Hostname or IP address |
-   | **Port** | SSH port — default `22` |
+   | **Port** | SSH port, default `22` |
    | **Username** | The SSH user on the remote server |
    | **Auth type** | `password` or `key` |
    | **Credential** | The password or private key |
@@ -40,7 +40,7 @@ Right-click a host and select **Delete**. This removes the entry from local stor
 
 ## Connect
 
-Click a host in the sidebar. Termique opens a terminal session. The credential is decrypted and used to establish the SSH connection — it is never stored or logged in plaintext.
+Click a host in the sidebar. Termique opens a terminal session. The credential is decrypted and used to establish the SSH connection. It is never stored or logged in plaintext.
 
 <Frame>
   <img src="/images/host-detail.png" alt="Host detail page showing connection info, sharing, command logging, and monitoring" />

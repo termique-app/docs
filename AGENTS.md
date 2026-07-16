@@ -1,7 +1,7 @@
 > For Mintlify product knowledge (components, configuration, writing standards),
 > install the Mintlify skill: `npx skills add https://mintlify.com/docs`
 
-# Termique documentation — agent instructions
+# Termique documentation: agent instructions
 
 ## About this project
 
@@ -21,7 +21,7 @@
 | credential | A password or private key used for SSH authentication. |
 | session | A live SSH terminal connection. |
 | master password | The user's chosen password that protects all stored credentials. |
-| DEK | Data Encryption Key — wrapped by the master password, used to encrypt individual credentials. |
+| DEK | Data Encryption Key, wrapped by the master password, used to encrypt individual credentials. |
 | workspace | Not used. Termique is a personal tool with optional team sharing. |
 | user | The person using Termique. Not "member" or "customer". |
 | sync | The process of mirroring data between local SQLite and the API backend. |
@@ -29,8 +29,9 @@
 ## Voice and style
 
 - Use active voice and second person ("you").
-- Keep sentences concise — one idea per sentence.
+- Keep sentences concise. One idea per sentence.
 - Use sentence case for all headings.
+- No em dashes (—). Use a period, colon, or comma instead.
 - **Bold** for UI elements: Click **Add host**.
 - `Code` for file names, commands, paths, ports, hostnames, and any value that could be copy-pasted into a terminal.
 - No exclamation marks, no emoji, no hype language.
@@ -49,6 +50,6 @@
 | ✅ Termique voice | ❌ Avoid |
 |---|---|
 | Add host | Let's add your first server! |
-| connection refused — port 22 | Oops! Something went wrong 😔 |
+| connection refused, port 22 | Oops! Something went wrong 😔 |
 | 4 hosts · 1 connected | You have 4 hosts (1 is currently connected) |
 | Tap to connect | Click here to start your session |

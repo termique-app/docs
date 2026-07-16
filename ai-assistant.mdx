@@ -11,10 +11,10 @@ Click the **AI** icon in the terminal session toolbar. The chat panel opens alon
 
 ## What you can do
 
-- **Generate commands** — describe what you want to do; the assistant returns a shell command you can run with one click.
-- **Explain output** — paste terminal output and ask what it means.
-- **Debug issues** — describe a connection error or unexpected behavior.
-- **Automate tasks** — the assistant can propose a sequence of commands for multi-step operations.
+- **Generate commands**: describe what you want to do; the assistant returns a shell command you can run with one click.
+- **Explain output**: paste terminal output and ask what it means.
+- **Debug issues**: describe a connection error or unexpected behavior.
+- **Automate tasks**: the assistant can propose a sequence of commands for multi-step operations.
 
 ## Provider modes
 
@@ -32,7 +32,7 @@ If you have an OpenAI-compatible endpoint (e.g. your own OpenAI account, Ollama,
 2. Enable **Custom endpoint**.
 3. Enter your endpoint URL and API key.
 
-The API key is stored encrypted (using your DEK) and is only sent to your specified endpoint — never to the Termique backend.
+The API key is stored encrypted (using your DEK) and is only sent to your specified endpoint, never to the Termique backend.
 
 <Warning>
   API keys are stored encrypted locally and in your API backend as an encrypted blob. Do not share your API key or enter it into an untrusted build of Termique.
@@ -42,7 +42,7 @@ The API key is stored encrypted (using your DEK) and is only sent to your specif
 
 The assistant can be configured to automatically run proposed commands without a manual confirmation click. This is off by default. Enable it in **Settings → AI → Auto-execute**.
 
-Use auto-execute only on non-production hosts. Commands run immediately — there is no undo.
+Use auto-execute only on non-production hosts. Commands run immediately. There is no undo.
 
 ## Context
 
@@ -50,4 +50,4 @@ The assistant has context about which host you are connected to (label, hostname
 
 ## Memory
 
-On [Pro](/plans), the assistant can save memories — short notes about a host or your preferences — and recall them in later sessions. Free accounts don't have memory: each conversation starts fresh.
+On [Pro](/plans), the assistant can save memories (short notes about a host or your preferences) and recall them in later sessions. Free accounts don't have memory: each conversation starts fresh.

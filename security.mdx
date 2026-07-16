@@ -3,7 +3,7 @@ title: "Security & encryption"
 description: "How Termique protects your credentials and what the master password does."
 ---
 
-Termique uses end-to-end encryption. Your credentials are encrypted on your device before they are stored locally or synced — the Termique servers never see plaintext passwords or private keys.
+Termique uses end-to-end encryption. Your credentials are encrypted on your device before they are stored locally or synced. The Termique servers never see plaintext passwords or private keys.
 
 ## Master password
 
@@ -12,7 +12,7 @@ On first launch, you set a master password. This password:
 - Is used to derive an encryption key (with a random per-user salt).
 - Never leaves your device.
 - Is never sent to any server.
-- Cannot be recovered if lost — there is no reset mechanism.
+- Cannot be recovered if lost. There is no reset mechanism.
 
 Store it in a password manager. You can change it later from **Settings → Security**.
 
@@ -32,7 +32,7 @@ When you unlock the app with your master password, the DEK is unwrapped and held
 
 ## Credential encryption
 
-Every credential stored by Termique is encrypted using the DEK. Encryption is performed before the credential reaches any storage layer — local or remote. The app does not retain plaintext credentials after the encryption step.
+Every credential stored by Termique is encrypted using the DEK. Encryption is performed before the credential reaches any storage layer, local or remote. The app does not retain plaintext credentials after the encryption step.
 
 ## Unlock flow
 
@@ -49,7 +49,7 @@ If the master password is wrong, the DEK cannot be unwrapped and no credentials 
 
 ## Failed attempts
 
-After 5 failed unlock attempts, Termique locks the unlock screen for 5 minutes. This applies regardless of which device or password you're trying — it protects against brute-force guessing of your master password.
+After 5 failed unlock attempts, Termique locks the unlock screen for 5 minutes. This applies regardless of which device or password you're trying. It protects against brute-force guessing of your master password.
 
 <Frame>
   <img src="/images/lockout.png" alt="Lockout screen showing a countdown after too many failed attempts" />

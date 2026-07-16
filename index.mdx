@@ -5,7 +5,7 @@ description: "Termique is a cross-platform SSH manager with end-to-end encryptio
 
 Termique is a desktop SSH manager built for infrastructure engineers who manage multiple servers across teams and environments.
 
-It combines the feel of a native terminal emulator with structured host management, encrypted credential storage, and optional team sync — all behind a master password that never leaves your device.
+It combines the feel of a native terminal emulator with structured host management, encrypted credential storage, and optional team sync, all behind a master password that never leaves your device.
 
 ## Key capabilities
 
@@ -20,13 +20,13 @@ It combines the feel of a native terminal emulator with structured host manageme
     Organize servers with groups, tags, and color labels.
   </Card>
   <Card title="AI assistant" icon="sparkles">
-    Get shell command suggestions, debug connection issues, and automate repetitive tasks — either via the Termique backend or your own endpoint.
+    Get shell command suggestions, debug connection issues, and automate repetitive tasks, either via the Termique backend or your own endpoint.
   </Card>
   <Card title="Team sharing" icon="users" href="/sharing">
     Share hosts with your team via invite links. Command audit logs keep shared sessions accountable. Requires Pro.
   </Card>
   <Card title="Sync" icon="server">
-    Your data syncs across devices automatically once you sign in. Hosts, groups, snippets, and encrypted credentials — always up to date.
+    Your data syncs across devices automatically once you sign in. Hosts, groups, snippets, and encrypted credentials: always up to date.
   </Card>
   <Card title="Monitoring" icon="monitor" href="/monitoring">
     Install a lightweight agent to track CPU, RAM, and disk on your servers, and set alert rules for thresholds.
@@ -37,19 +37,19 @@ It combines the feel of a native terminal emulator with structured host manageme
 
 <Steps>
   <Step title="Sign in">
-    Sign in with Google, GitHub, or Apple. This identifies your account and enables sync — it never touches your credentials.
+    Sign in with Google, GitHub, or Apple. This identifies your account and enables sync. It never touches your credentials.
   </Step>
   <Step title="Set a master password">
     On first launch, you choose a master password. The app derives an encryption key and generates a random Data Encryption Key (DEK). The DEK is wrapped (encrypted) with your master password and stored locally. Your master password never leaves the device.
   </Step>
   <Step title="Add hosts">
-    Save SSH connection details — hostname, port, username, and authentication method (password or key). Credentials are encrypted with the DEK before storage.
+    Save SSH connection details: hostname, port, username, and authentication method (password or key). Credentials are encrypted with the DEK before storage.
   </Step>
   <Step title="Connect">
     Open a terminal session with one click. Termique decrypts the credential and opens an SSH connection to your server.
   </Step>
   <Step title="Sync">
-    Hosts, groups, snippets, and encrypted credentials stay up to date across all your signed-in devices. The sync backend never sees plaintext credentials — only encrypted blobs.
+    Hosts, groups, snippets, and encrypted credentials stay up to date across all your signed-in devices. The sync backend never sees plaintext credentials, only encrypted blobs.
   </Step>
 </Steps>
 
