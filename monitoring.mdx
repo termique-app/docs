@@ -66,6 +66,21 @@ Desktop shows alerts only while Termique is running. The mobile app receives pus
   Background push notifications (alerts delivered while the desktop app is closed) require a Pro subscription.
 </Note>
 
+## Automatic updates
+
+The agent checks for a new version once a day and updates only if one is available. If it's already on the latest version, nothing happens: no reinstall, no restart.
+
+If an update fails to start correctly, the agent restores the previous version and restarts automatically. No manual recovery is needed.
+
+To skip automatic updates:
+
+- At install time, set `TERMIQUE_AUTO_UPDATE=false` before running the install command.
+- On an agent that's already installed, add `auto_update = false` to `~/.config/termique-agent/config.toml`. This takes effect on the next daily check, no restart required.
+
+<Note>
+  Opting out means the agent stays on its currently installed version until you update it yourself by reinstalling.
+</Note>
+
 ## Revoke or reinstall
 
 - **Revoke**: stops the agent from reporting within 30 seconds. The agent keeps running on the server until you remove it. Uninstall with:
