@@ -1,0 +1,48 @@
+---
+title: "Incident investigation"
+description: "Ask the AI assistant to investigate an issue across multiple hosts and produce a structured report."
+---
+
+Incident investigation correlates live commands, historical metrics, and captured security events across several hosts at once, then produces a structured report with a summary, timeline, root cause, and recommendations.
+
+<Note>
+  Incident investigation is a [Pro](/plans) feature.
+</Note>
+
+## Start an investigation
+
+1. From a host's detail view, click **Generate Report**.
+2. Select the hosts involved and a time window (last hour, 6 hours, 24 hours, or 7 days).
+3. Click **Start investigation**.
+
+The investigation opens as its own tab, alongside your terminal sessions. Ask a question, for example "why is CPU usage high?" or "check for suspicious logins."
+
+## How it works
+
+The assistant gathers evidence using:
+
+- **Live commands** on the selected hosts, run over your existing SSH sessions (or new ones opened for the investigation).
+- **Historical metrics** (CPU, RAM, disk) from [Monitoring](/monitoring), for time ranges before the investigation started.
+- **Security events** (failed logins, bans, HTTP brute force), if [security event capture](/monitoring#security-events) was enabled on the host.
+
+Read-only commands (listing files, checking process status, reading logs) run automatically. Anything else asks for confirmation first, the same as [auto-execute](/ai-assistant#auto-execute) in a regular terminal session, but stricter: there is no setting to bypass confirmation in an investigation.
+
+## The report
+
+Click **View report** once the assistant has gathered enough evidence. The report includes:
+
+| Section | Contents |
+|---|---|
+| Summary | A short description of what was found. |
+| Timeline | Key events, in order, with severity. |
+| Root cause chain | The steps that led to the issue. |
+| Findings | Individual observations, each tagged `confirmed` (backed by an actual command or metric result) or `partial` (inference). |
+| Recommendations | Grouped into quick wins, medium-term, and larger effort. |
+
+A finding is marked **not verifiable from collected evidence** if it cites a number that doesn't appear anywhere in the commands or metrics actually gathered during the investigation.
+
+Save the report to disk or copy it as Markdown from the report dialog.
+
+## Multiple investigations
+
+Each investigation is its own tab. Starting a new one doesn't close or interrupt an investigation already in progress.

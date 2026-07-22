@@ -44,7 +44,8 @@
       {
         "group": "Monitoring",
         "pages": [
-          "monitoring"
+          "monitoring",
+          "incident-investigation"
         ]
       },
       {

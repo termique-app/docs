@@ -28,6 +28,54 @@ The agent connects within about 30 seconds. Once it checks in, the Monitoring se
 
 The install script writes a config file holding an opaque token at `~/.config/termique-agent/config.toml` (`chmod 600`) and registers a systemd service.
 
+## Config file
+
+Most settings are covered elsewhere in this page and set through the app. To edit `config.toml` directly, for example on a server you manage over a plain SSH session:
+
+| Field | Default | Description |
+|---|---|---|
+| `token` | - | Set automatically by the install command. Don't edit by hand. |
+| `server_id` | - | Set automatically by the install command. Don't edit by hand. |
+| `api_url` | `https://monitor.termique.app` | Where the agent reports. Change this only if you're self-hosting the Termique API backend. |
+| `interval` | `30` | Seconds between metric reports. |
+| `debug` | `false` | Verbose logging, for troubleshooting. |
+| `auto_update` | `true` | See [Automatic updates](#automatic-updates). |
+| `security_events_enabled` | `false` | See [Security events](#security-events). |
+| `reverse_proxy_log_path` | - | See [Security events](#security-events). |
+| `security_events_flush_interval` | `120` | Seconds between security-event batch sends. |
+| `security_events_max_batch` | `200` | Maximum events sent per batch. Extra events in the same window are dropped, not queued. |
+
+After editing, restart the agent to apply changes:
+
+```bash
+sudo systemctl restart termique-agent
+```
+
+<Warning>
+  Reinstalling generates a fresh `config.toml` and overwrites any manual edits. Use **Automatic updates** (below) for routine version updates, not a fresh reinstall.
+</Warning>
+
+## Security events
+
+Optional, off by default. When enabled, the agent watches for a fixed set of security-relevant patterns and reports them as structured events, never raw log contents:
+
+- Failed and successful SSH logins.
+- `fail2ban` bans and unbans, if `fail2ban` is installed.
+- HTTP error-rate spikes: many 4xx/5xx responses from one IP within a minute.
+- HTTP path-targeted brute force: many requests to the same URL from one IP within a minute, regardless of response status. This catches login-form brute force, which usually returns `200` for every attempt rather than an error.
+
+Security events power [Incident investigation](/incident-investigation). They are not shown as a standalone log in the app.
+
+### Enable it
+
+Turn on **Enable security event capture** when generating the install command. To also detect HTTP brute force, set **Reverse-proxy log path** to your web server's access log, for example `/var/log/nginx/access.log`.
+
+On an agent that's already installed, add the fields directly to `config.toml` instead: see [Config file](#config-file) above.
+
+### Retention
+
+Captured events are batched and sent every 2 minutes. Events are kept for 14 days on Free, 90 days on Pro.
+
 ## View metrics
 
 - **Host detail**: the Monitoring section on a host shows live CPU/RAM/disk tiles, color-coded (green under 70%, amber 70–89%, red 90%+).
