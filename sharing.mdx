@@ -1,9 +1,9 @@
 ---
 title: "Sharing"
-description: "Share hosts with team members via invite."
+description: "Share a host with someone on your team."
 ---
 
-You can share individual hosts with other Termique users. The recipient gets access to connect to the host using their own master password. Your credential is re-encrypted for them at the point of acceptance.
+You can share individual hosts with people on your [team](/teams). The recipient gets access to connect to the host using their own master password. Your credential is re-encrypted for them at the point of acceptance.
 
 <Note>
   Sharing requires a [Pro subscription](/plans). Free accounts cannot send or manage share invites.
@@ -12,32 +12,38 @@ You can share individual hosts with other Termique users. The recipient gets acc
 ## Share a host
 
 1. Right-click a host in the sidebar and select **Share**.
-2. Enter the recipient's email address (they must have a Termique account).
+2. Pick a recipient from your team roster.
 3. Click **Send invite**.
+
+If the person you want to share with isn't on your team yet, add them from the [Teams page](/teams) first, then come back to share.
 
 The invite is sent through the API backend. The host payload is encrypted before it is stored.
 
-## Accept an invite
+## Accept or decline an invite
 
-Open the **Shares** panel (bell icon or sidebar). Pending invites are listed there.
+Pending invites don't sit in your host list waiting for you. Click the bell icon in the sidebar: it shows a count of pending invites and opens a dialog to accept or decline each one.
 
-Click **Accept** on an invite. Termique:
+Accepting an invite:
 1. Downloads the encrypted host payload.
 2. Decrypts it using the sharing key.
 3. Re-encrypts the credential with your DEK.
-4. Saves the host to your local list.
+4. Saves the host to your local list, tagged as shared.
 
-The shared host appears in your host list tagged as shared.
+Declining rejects the invite. The host is not added.
 
 ## Command log consent
 
-If the host owner has command logging enabled, you will be asked to consent before accepting the invite. Accepting means your session activity on that host will be recorded and visible to the owner.
+If the host owner has command logging enabled, the accept dialog asks you to confirm before you continue. Accepting means your session activity on that host is recorded and visible to the owner.
 
-You can decline. The invite is then rejected and the host is not added.
+## Keeping a share up to date
+
+If the owner changes a shared host's credential, address, or username, every existing share of that host is updated automatically. You never need to be re-invited just because the owner rotated a password.
 
 ## Revoke access
 
-If you shared a host, open **Shares** and find the outgoing invite. Click **Revoke**. The recipient's copy of the host is not automatically deleted from their local device, only the server-side share record is removed.
+If you shared a host, open the host's **Sharing** tab and find the recipient. Click the trash icon to revoke. The recipient's local copy of the host is not automatically removed from their device, only their access to it.
+
+A revoked invite cannot be turned back on by the recipient. If you want to share with them again, send a new invite.
 
 ## Limitations
 
