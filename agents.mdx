@@ -1,0 +1,104 @@
+---
+title: "Agents (beta)"
+description: "Run coding agent CLIs like Claude Code and Codex from Termique, on your computer or on a host, and approve each step from your phone."
+---
+
+<Warning>
+  **Agents is not released yet.** It is in private beta and is not in any public version of the desktop app (the latest is `0.8.2`). It ships in a future release. Until then, this page describes how it works in the beta, and screens and options may still change. [Join the waitlist](https://termique.app/agents/) to hear when it is available.
+</Warning>
+
+Agents runs the coding agent CLIs you already use inside Termique. You chat with the agent, approve its edits and commands, and review its changes in one place. A session can run in a folder on this computer or in a folder on a host over SSH. Termique does not bring its own AI model: each agent uses your own account and limits.
+
+## Supported agents
+
+| Agent | Chat in Termique | Its own terminal UI | Images in chat |
+|---|---|---|---|
+| Claude Code | Yes | Yes | Yes |
+| Codex | Yes | Yes | Yes |
+| Grok | Yes | No | Yes |
+| Gemini CLI | Yes | Yes | Yes |
+| OpenCode | Yes | Yes | Yes |
+| Antigravity | No | Yes | No |
+| Claude Code agent teams | No | Yes | No |
+| Kilo Code | No | Yes | No |
+| Hermes | No | Yes | No |
+
+Every agent except Claude Code and Codex is marked **Experimental**: it works, but gets less testing during the beta.
+
+- Antigravity has no supported protocol for chat yet, so it always opens in its own terminal UI.
+- Claude Code agent teams only run in an interactive session, so they open in Claude Code's terminal UI with agent teams turned on.
+- OpenCode allows every edit and command by default. Termique starts it with permissions set to ask, so its requests come to you.
+
+## Requirements
+
+- The agent CLI is installed and signed in, on this computer or on the host. **Settings → Agents → Agent CLIs** shows each CLI, with **Install**, **Sign in** and **Update** when one is missing or out of date.
+- For a session on a host, the host is already added in Termique. `tmux` on the host keeps a session running after you disconnect.
+
+## Start a session
+
+1. Click **Agents** next to **Servers** at the top of the sidebar.
+2. Click **New project**. Pick **This computer** and a folder, or **SSH host**, a host and a folder on it.
+3. Set **Name** and **Default agent**. For a local git repo, turn on **Each session gets its own git worktree**, then click **Add project**.
+4. Open the project, describe the task, pick the agent and the permission mode, and click **Start**.
+
+You can also open the **+** menu and pick an agent under **New chat with**. **In its own terminal** in the same menu opens an agent straight in its terminal UI: Claude Code agent teams, OpenCode, Kilo Code and Hermes.
+
+## Permission modes
+
+New sessions start in **Manual**: every edit and command waits for you.
+
+| Mode | What the agent can do without asking |
+|---|---|
+| Manual | Nothing. Every edit and command asks first. |
+| Plan | Read and propose a plan. Nothing is edited until you approve it. |
+| Auto | Run safe reads and tests. Edits and other commands still ask. |
+| Accept edits | Edit files. Commands still ask. Not available for OpenCode and Grok. |
+
+A request shows as a card in the chat with **Allow once**, **Always allow**, **Deny** or **Tell it what to do instead**. Commands on a host, deletes and pushes always ask, whatever the mode.
+
+## Images
+
+Paste a screenshot with `Cmd+V`, drop images from Finder onto the chat, or attach them with **+**. You can send up to `10` images per message. Before you send, remove one from its thumbnail. After you send, click one to view it.
+
+- Large images are scaled down to `2000` px on the longest side and kept under `3.75 MB`. GIFs are sent as they are.
+- Images reach an agent on a host the same way, without a separate upload, and show again when you reopen the session.
+- The mobile app shows that a message had images, not the images themselves.
+
+## Worktrees, review and merge
+
+With worktrees on, each session works on its own `agent/` branch in its own git worktree, so two sessions never edit the same checkout. When the agent is done, open **Review changes** to read the diff, leave notes on lines and send them back. **Merge** brings the branch into your branch.
+
+## Sessions on a host
+
+A project can be a folder on a host. Termique connects over SSH, starts the agent there and keeps it running inside `tmux`, so a dropped connection or a sleeping laptop does not stop it.
+
+## From your phone
+
+Sign in on the [mobile app](/mobile) to see your sessions, answer questions, approve commands and start new chat sessions.
+
+- A newly signed-in phone can only view until you allow it on your computer.
+- Risky requests (deletes, pushes, anything on a host) ask for Face ID first.
+- Messages between your computer and your phone are end-to-end encrypted. The Termique backend passes them on but cannot read them.
+
+## Experimental features
+
+**Race** (one task sent to several agents, each in its own worktree), the **Supervisor** (steps in when a session loops, stalls or runs out of room) and **Automations** (prompts on a schedule) are off by default during the beta. Turn them on in **Settings → Agents → Experimental features**.
+
+While they are off, the Supervisor does not act and scheduled runs do not start on this computer. An automation already on a host's schedule keeps running there until you remove it.
+
+## Plans
+
+| | Free | Pro |
+|---|---|---|
+| Sessions | 1 at a time, on this computer | Side by side, and on hosts |
+| Race, Supervisor, Automations | No | Yes |
+| Approve from your phone | Yes | Yes |
+
+See [Plans](/plans) for pricing.
+
+## Limitations
+
+- Only Claude Code can switch model and effort from the session menu.
+- Antigravity, Kilo Code, Hermes and Claude Code agent teams have no chat view.
+- Grok's terminal UI can't continue a conversation started in chat.
+- Windows is not verified yet.

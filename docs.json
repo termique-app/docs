@@ -35,6 +35,12 @@
         ]
       },
       {
+        "group": "Agents (beta)",
+        "pages": [
+          "agents"
+        ]
+      },
+      {
         "group": "Keys & credentials",
         "pages": [
           "ssh-keys",
