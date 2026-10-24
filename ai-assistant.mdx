@@ -1,57 +1,128 @@
 ---
 title: "AI assistant"
-description: "Get shell command suggestions and debug connection issues in any terminal session."
+description: "Ask about a host from its terminal session. The assistant proposes commands, runs the ones you approve, and reads the output."
 ---
 
-The AI assistant is a chat panel available inside any terminal session. Ask it to generate commands, explain output, or diagnose connection problems.
+The AI assistant is a chat panel inside a terminal session. Ask a question about the host, and the assistant proposes commands, runs the ones you approve on that session, and reads the output to answer or suggest the next step.
 
 <Note>
-  For an issue spanning multiple hosts, see [Incident investigation](/incident-investigation) instead.
+  To investigate an incident across one or more hosts and get a written report, see [Incident investigation](/incident-investigation).
 </Note>
 
 ## Open the assistant
 
-Click the **AI** icon in the terminal session toolbar. The chat panel opens alongside the terminal.
+In a connected terminal session, click **Ask** in the bottom-right corner of the terminal. The panel opens over the right side of the focused pane. Drag its left edge to resize it, and click **Close assistant** to close it.
 
-## What you can do
+Each session has its own conversation. The assistant is not available in a Files pane.
 
-- **Generate commands**: describe what you want to do; the assistant returns a shell command you can run with one click.
-- **Explain output**: paste terminal output and ask what it means.
-- **Debug issues**: describe a connection error or unexpected behavior.
-- **Automate tasks**: the assistant can propose a sequence of commands for multi-step operations.
+<Note>
+  On Free, the assistant works on synced hosts only. For a host kept only on this computer, the panel shows **The assistant works on synced hosts**. Click **Sync this host** to use it.
+</Note>
 
-## Provider modes
+<Frame>
+  <img src="/images/ai-assistant.png" alt="Assistant panel next to a terminal session, with a proposed command, its risk dot, and Run, Edit, and Reject buttons" />
+</Frame>
 
-### Hosted (default)
+## Ask a question
 
-By default, requests go to the Termique API backend. No API key required. Your conversation is processed on the backend and not stored.
+Type a question, or pick a starter such as **Why is the disk filling up?**, and press `Enter`. Use `Shift+Enter` for a new line.
 
-Hosted usage has a daily limit: 15 prompts/day on Free, 100 prompts/day on [Pro](/plans). The limit resets at midnight UTC.
+The assistant answers and proposes commands as numbered steps. Each step shows what it is for, the command, and a risk dot: low, medium, or high. Nothing runs until you approve it:
 
-### BYO endpoint
+- **Run** runs the command on the session. The output goes back to the assistant, which continues on its own.
+- **Edit** lets you change the command before you run it.
+- **Reject** skips the step.
+- **Run all** appears when two or more low or medium risk steps are waiting.
 
-If you have an OpenAI-compatible endpoint (e.g. your own OpenAI account, Ollama, or another provider), you can point the assistant at it.
+Safety checks:
 
-1. Open **Settings → AI**.
-2. Enable **Custom endpoint**.
-3. Enter your endpoint URL and API key.
+- A **High risk** step needs a second click on **Confirm**.
+- A step that matches a destructive pattern is marked **Flagged**. Click **Run anyway**, then **Confirm**, to run it.
 
-The API key is stored encrypted (using your DEK) and is only sent to your specified endpoint, never to the Termique backend.
+Commands run on the session in the background, with their output captured for the assistant. They are not typed into your terminal. After 5 automatic follow-ups in a row, the assistant pauses until you send a new message.
+
+Click **Reasoning** to see the model's reasoning, **Stop** to interrupt a reply, and **Clear conversation** (trash icon) to start over.
+
+## Include terminal output
+
+The assistant does not see your terminal unless you attach it. Click **Terminal** under the message field to send recent terminal output with your next message. If your message mentions something like `this error` or `the output above`, the panel offers **Attach the terminal output?**.
+
+Termique scrubs passwords, tokens, and keys from the output before sending it. Your message then shows `+ N lines of terminal output`. Click it to see exactly what was sent.
+
+## Auto-run
+
+Turn on **Auto-run** under the message field to let the assistant run steps without asking, for the current session. It is off by default.
+
+With **Auto-run** on:
+
+- Low and medium risk steps run on their own, but only if Termique also classifies the command as read-only. Termique checks the command text on your computer and does not rely on the model's risk label. Anything it cannot confirm as read-only still waits for you.
+- High risk and flagged steps always wait for you.
+- Steps run on the [hosted](#hosted) provider only. With a custom endpoint, every step waits for you.
+
+Steps that ran this way are labeled `auto`.
 
 <Warning>
-  API keys are stored encrypted locally and in your API backend as an encrypted blob. Do not share your API key or enter it into an untrusted build of Termique.
+  Use **Auto-run** with care on production hosts. A command that ran cannot be undone.
 </Warning>
 
-## Auto-execute
+## Inline suggestion
 
-The assistant can be configured to automatically run proposed commands without a manual confirmation click. This is off by default. Enable it in **Settings → AI → Auto-execute**.
+For a single command, press `Cmd+I` on macOS or `Ctrl+Shift+I` on Windows and Linux in a terminal. Type what you want to run under **What do you want to run?** and press `Enter`. Termique shows one command with its risk. Click **Run** to send it to the terminal and run it. High risk and flagged commands need a second click.
 
-Use auto-execute only on non-production hosts. Commands run immediately. There is no undo.
+If the task needs more than one command, click **Open AI Chat** to continue in the assistant. You can change the shortcut in **Settings** > **Shortcuts**.
 
 ## Context
 
-The assistant has context about which host you are connected to (label, hostname, username). It does not have access to your terminal history unless you paste it into the chat.
+With each message, the assistant receives:
+
+- The host's label and username.
+- The output of commands it ran in this conversation.
+- Terminal output, only when you attach it.
+- Relevant [memories](#memory), on the hosted provider.
 
 ## Memory
 
-On [Pro](/plans), the assistant can save memories (short notes about a host or your preferences) and recall them in later sessions. Free accounts don't have memory: each conversation starts fresh.
+On [Pro](/plans), you can save notes the assistant keeps in mind in later conversations, such as how a host is set up or how you like things done.
+
+- Hover an assistant reply and click **Remember** to save it as a memory.
+- Click **Memory** at the top of the panel to see, add, and delete memories. Under **Save to**, choose **This host** or **Global**.
+
+Each memory can hold up to 4000 characters. With each message, the hosted assistant adds up to 3 memories that match it, preferring ones for the current host. Memories are saved to your account and also appear on the [mobile app](/mobile).
+
+## Providers
+
+Choose a provider in **Settings** > **AI assistant**, then click **Save**.
+
+### Hosted
+
+The default. Requests go through the Termique API backend. No API key is needed.
+
+| Plan | Assistant prompts per day | Inline suggestions per day |
+|---|---|---|
+| Free | `15` | `30` |
+| Pro | `100` | `200` |
+
+Only messages you send count as prompts. The assistant's automatic follow-ups after a command runs do not. [Incident investigation](/incident-investigation) messages count toward the same daily prompts. Limits reset at midnight UTC.
+
+The message field shows how many prompts are left, for example `12 left`. Hover it to see when the limit resets.
+
+### Custom endpoint
+
+Use your own OpenAI-compatible API, for example your OpenAI account, Ollama, or another provider.
+
+1. Open **Settings** > **AI assistant** and select **Custom endpoint**.
+2. Enter the **API base URL**, the **Model**, and the **API key**.
+3. Click **Save**.
+
+The app sends requests directly to your endpoint, not through the Termique backend, and Termique does not meter them. The API key is encrypted with your DEK and stored on this computer. It is not synced, so enter it on each computer.
+
+With a custom endpoint:
+
+- **Auto-run** does not run anything.
+- Memories are not added to requests.
+- To attach terminal output, first turn on **Send terminal output to this endpoint**. Termique scrubs secrets but cannot vet your endpoint.
+- Incident investigations still use the hosted provider.
+
+<Warning>
+  Only enter an API key in an official build of Termique.
+</Warning>

@@ -1,44 +1,143 @@
 ---
 title: "Terminal"
-description: "Work with live SSH sessions in the Termique terminal."
+description: "Work with SSH sessions, local shells, and split panes in the Termique terminal."
 ---
 
-When you connect to a host, Termique opens a terminal session: a full PTY shell with an SSH connection to your server.
+A session is a live SSH connection to a host, shown in a full terminal with its own PTY. Termique also runs local shells on your computer in the same view.
 
 ## Open a session
 
-Click a host in the sidebar. The terminal opens in the main panel. Each session runs in its own tab.
+Connect to a host from the hosts list, the host's detail page, a group, or the command palette. See [Connect](/hosts#connect).
+
+Open sessions are listed under **Sessions** in the sidebar, in the order you opened them. Each connect opens a new session, so two sessions to the same host are labelled `web-prod-01` and `web-prod-01 (2)`. Click a session to switch to it. A dot shows its status.
 
 <Frame>
-  <img src="/images/terminal.png" alt="Terminal session showing an active SSH connection" />
+  <img src="/images/terminal.png" alt="Terminal session with the session header, Terminal and Files switch, and split buttons" />
 </Frame>
 
-## Multiple sessions
+## Open a local shell
 
-Click another host while a session is open. A new tab appears at the top. Switch between tabs by clicking them or using the keyboard shortcut.
+Click the **New local shell** button (**+**) next to **Sessions** in the sidebar. The hosts list also offers **Open local shell** while you have no hosts.
 
-Sessions are independent. Each maintains its own SSH connection and PTY state.
+| Platform | Shell |
+|----------|-------|
+| macOS | Your login shell from `$SHELL` (falls back to `zsh`), started as a login shell so it reads `~/.zprofile` |
+| Linux | Your shell from `$SHELL` (falls back to `bash`) |
+| Windows | `powershell.exe` |
 
-## Resize
+When a local shell exits, the pane shows **Shell exited**. Click **Restart shell** to start a new one in the same pane.
 
-Drag the terminal panel edges or resize the app window. Termique sends a `SIGWINCH` signal to the remote PTY so the shell reflects the new dimensions.
+## The session header
 
-## Copy and paste
+Each session has a header above the terminal:
 
-- **Copy**: select text with the mouse. The selection is copied automatically.
-- **Paste**: right-click and select **Paste**, or use the OS paste shortcut (`Cmd+V` / `Ctrl+Shift+V`).
-
-## Disconnect
-
-Click **Disconnect** in the session tab menu, or close the tab. This sends a clean SSH session close to the server. The host entry is not deleted.
+- **Session name**: click it to see the **Address**, the jump host chain (**Via**), the **Group**, how long it has been **Connected**, and whether the **Command log** is on. **Open host details** goes to the host's page.
+- **Run a snippet**: opens the [snippet palette](/snippets#run-a-snippet).
+- **Forward a port**: adds a local [port forward](/port-forwarding) for this host.
+- **Terminal** / **Files**: switches between the shell and the [SFTP file browser](/sftp) for this session.
+- **Split right** and **Split down**: see [Split panes](#split-panes).
+- **Close session**.
 
 ## Session status
 
-The tab label shows the host label and a status indicator:
-- Connected: active SSH session
-- Disconnected: session closed or dropped
-- Reconnecting: Termique is attempting to reconnect after a network interruption
+| Status | Meaning |
+|--------|---------|
+| Connecting | Termique is opening the connection. The terminal shows `Connecting to <host>`. |
+| Connected | The session is live. |
+| Disconnected | The session ended. Click **Reconnect** or **Close**. |
+| Connection failed | The connection failed. The banner shows the error. Click **Retry** or **Close**. |
+
+Termique does not reconnect a dropped session on its own. Use **Reconnect** to open it again.
+
+If the server's host key or the host's address changed, the session is blocked before anything is sent. See [Host key and address checks](/hosts#host-key-and-address-checks).
+
+## Split panes
+
+A session tab can hold up to 4 panes, each with its own session.
+
+- Click **Split right** or **Split down** in the header, then pick the host to open in the new pane. Shortcuts: `⌘D` / `⌘⇧D` on macOS, `Ctrl+Shift+D` / `Ctrl+Shift+E` on Windows and Linux.
+- Drag a session from the sidebar onto a pane to merge it into that tab as a new pane. Only single-pane sessions can be merged.
+- Drag a pane's header onto another pane to swap their positions.
+- Drag the divider between panes to resize them.
+- Each pane has its own **Terminal** / **Files** switch, so one pane can browse files while another runs a shell.
+- **Close pane** (the **x** in a pane's header) closes only that pane.
+
+Closing a tab that holds more than one live pane asks for confirmation, because it disconnects all of them and discards their scrollback.
+
+<Frame>
+  <img src="/images/terminal-split.png" alt="One session tab split into three panes, two terminals and one Files pane" />
+</Frame>
+
+## Copy and paste
+
+| Action | macOS | Windows and Linux |
+|--------|-------|-------------------|
+| Copy the selection | `⌘C` | `Ctrl+C` while text is selected |
+| Paste | `⌘V` | `Ctrl+V` |
+| Paste from the context menu | Right-click | Right-click |
+
+Without a selection, `Ctrl+C` is sent to the shell as usual.
+
+**Copy on select** copies a mouse selection as soon as you release the button, so a right-click right after pastes it. It is on by default on Windows and Linux and off on macOS. Change it in **Settings** > **Appearance** > **Terminal**.
+
+In programs that capture the mouse, such as `vim`, `htop`, or `tmux` with mouse mode, hold `Option` (macOS) or `Shift` (Windows and Linux) while you drag to select text.
+
+Programs on the server can set your clipboard with OSC 52 (for example `tmux set-clipboard` or `vim` over SSH). Termique accepts this only while the terminal has focus, and never lets a program read your clipboard.
+
+### Paste safety
+
+Termique strips control characters from pasted text. If the text spans more than one line, Termique shows the text and asks **Paste n lines?** first, because each line may run as a command as soon as it is pasted. Click **Paste** to continue.
+
+## Find in scrollback
+
+Press `⌘F` (macOS) or `Ctrl+Shift+F` (Windows and Linux) to open **Find in scrollback** in the focused pane. If you have a single-line selection, it becomes the search term.
+
+- `Enter` goes to the next match, `Shift+Enter` to the previous one.
+- `Esc` closes the search.
+
+Each terminal keeps 5,000 lines of scrollback.
+
+## Font size
+
+| Action | macOS | Windows and Linux |
+|--------|-------|-------------------|
+| Increase | `⌘=` | `Ctrl+=` |
+| Decrease | `⌘-` | `Ctrl+-` |
+| Reset to `13px` | `⌘0` | `Ctrl+0` |
+
+The size applies to every pane and ranges from `8px` to `28px`.
+
+## Keyboard shortcuts
+
+| Action | macOS | Windows and Linux |
+|--------|-------|-------------------|
+| Command palette | `⌘K` | `Ctrl+K` |
+| Snippet palette | `⌘⇧K` | `Ctrl+Shift+K` |
+| New session (go to hosts) | `⌘T` | `Ctrl+Shift+T` |
+| Close tab | `⌘W` | `Ctrl+Shift+W` |
+| Next / previous tab | `⌘⇧]` / `⌘⇧[` | `Ctrl+Shift+]` / `Ctrl+Shift+[` |
+| Go to tab 1 to 9 | `⌘1` to `⌘9` | `Ctrl+1` to `Ctrl+9` |
+| Split right / down | `⌘D` / `⌘⇧D` | `Ctrl+Shift+D` / `Ctrl+Shift+E` |
+| Close pane | `⌘⇧W` | `Ctrl+Shift+X` |
+| Focus pane left, right, up, down | `⌥⌘` + arrow | `Ctrl+Alt` + arrow |
+| Find in scrollback | `⌘F` | `Ctrl+Shift+F` |
+
+Remap any shortcut in **Settings** > **Shortcuts**. In the command palette, type `?` to search the shortcuts.
+
+## Resize
+
+Resize the window or the panes. Termique sends the new size to the remote PTY, so full-screen programs redraw at the right dimensions.
+
+## Close a session
+
+Click **Close session** in the header, hover the session in the sidebar and click its **x**, or press the close tab shortcut. This disconnects the session and discards its scrollback. The host is not deleted.
+
+If you quit Termique with active sessions, it asks you to confirm first.
 
 ## Command logging
 
-If command logging is enabled on a host, keystrokes and commands are recorded and pushed to the API backend as an audit log. See [Command logs](/command-logs).
+If command logging is on for a host, Termique records the top-level commands you type at the shell prompt. Output is never recorded. On a shared host with logging on, an eye icon next to the session name reminds you that the owner and everyone the host is shared with can see your commands. See [Command logs](/command-logs).
+
+## AI assistant
+
+Connected sessions have the AI assistant one click away, and `⌘I` (macOS) or `Ctrl+Shift+I` (Windows and Linux) opens an inline command suggestion. See [AI assistant](/ai-assistant).

@@ -1,37 +1,70 @@
 ---
 title: "Teams"
-description: "Build a roster of teammates and share hosts without re-entering their email every time."
+description: "Add the people you share hosts with, track your recipient slots, and see the hosts shared with you."
 ---
 
-Teams lets you build a roster of people you work with once, then pick from that roster whenever you [share a host](/sharing), instead of typing an email address each time.
+The **Teams** page holds the people you work with. Add someone once, and you can pick them from any host's share dialog when you [share a host](/sharing). The page also lists the hosts other people shared with you.
+
+Open it from **Teams** in the sidebar. It has two views:
+
+- **Recipients**: the people on your team, and what you share with each of them.
+- **Shared with me**: hosts other people shared with you and you accepted, with their owner and when you last connected.
 
 <Note>
-  Teams requires a [Pro subscription](/plans). Free accounts cannot add teammates.
+  Adding teammates requires a [Pro subscription](/plans). On Free, the page shows **Requires Pro** and **Add teammate** opens an upgrade prompt. You don't need Pro to join someone else's team or accept their shares.
 </Note>
+
+<Frame>
+  <img src="/images/teams.png" alt="Teams page, Recipients view, with the recipients used counter, one accepted teammate, and one invite awaiting response" />
+</Frame>
 
 ## Add a teammate
 
-1. Open the **Teams** page from the sidebar.
-2. Click **Add teammate** and enter their email.
-3. Click **Invite**.
+1. Open **Teams** and click **Add teammate**.
+2. Enter their **Email**.
+3. Click **Add teammate**.
 
-If the email belongs to an existing Termique account, they're added to your roster once they accept. If they don't have an account yet, they get an invite by email and join your roster automatically the moment they sign up.
+Termique emails them an invite to join your team. They accept or decline it from the link in the email. If they don't have a Termique account yet, the invite includes creating one.
 
-Being on your team roster does not give someone access to anything by itself. It only means you can pick them when you share a host.
+Being on your team does not give anyone access to anything. It only means you can pick them when you share a host.
 
-## Manage your roster
+An invite that isn't answered within 14 days expires and frees its slot. Add the person again to send a new one.
 
-The Teams page lists everyone on your roster, along with any invites you're still waiting on. From here you can:
+## Your recipient list
 
-- See who's accepted and who's still pending.
-- Revoke a pending invite before it's accepted.
-- Remove someone from your roster (this does not remove hosts you've already shared with them; revoke those separately from the host's [Sharing](/sharing) tab).
+Each row in **Recipients** shows the person's email and their access:
 
-## Teammate limits
+| Access | Meaning |
+|--------|---------|
+| **Invited · awaiting signup** | They don't have a Termique account yet |
+| **Invited · awaiting response** | They have an account but haven't answered the invite |
+| **No hosts shared yet** | They joined your team. Share a host with them from its share dialog |
+| `3 hosts · web-01, web-02, db-01` | The hosts you share with them |
 
-| Plan | Teammates included |
-|------|---------------------|
-| Free | Not available |
-| Pro | 5 |
+Emails are shown in full, so you can spot the same person signed up twice and using two slots.
 
-If you're on Pro and need more than 5 teammates, contact support.
+## Recipient slots
+
+Pro includes `5` recipient slots. The header shows how many you use, for example `2 of 5` **recipients used**.
+
+- Each person uses one slot, however many hosts you share with them.
+- Pending team invites use a slot too. Cancelling an invite, or letting it expire, frees the slot.
+- When all slots are in use, **Add teammate** is disabled. Remove a recipient to free a slot, or add more slots in the [web dashboard](https://termique.app/dashboard). See [Plans & billing](/plans) for pricing.
+
+## Revoke a teammate
+
+Click **Revoke** next to the person, then **Revoke access**. They lose access to every host you shared with them right away, and leave your team. To give access back, add them again and share again. They have to accept both.
+
+For a pending invite, the button is **Cancel invite**. Cancelling frees the slot. You can invite them again later.
+
+To remove someone from a single host only, revoke them from that host's **Sharing** tab. See [Revoke access](/sharing#revoke-access).
+
+## Errors when adding a teammate
+
+| Message | What to do |
+|---------|------------|
+| **Already on your team** | They are already on your team or have an open invite from you. |
+| **Invite already sent to that address** | An invite to this email is still waiting for signup. |
+| **This address has unsubscribed from invite emails and cannot be invited this way.** | The recipient opted out of invite emails. Ask them to sign up first. |
+| **You've reached today's limit for inviting people who don't have a termique account yet. Try again tomorrow.** | Wait a day, or invite people who already have an account. |
+| **Invite emails are not configured on this server.** | On a self-hosted backend, set up SMTP, or invite someone who already has an account. |

@@ -1,0 +1,76 @@
+---
+title: "Port forwarding"
+description: "Tunnel ports through your hosts with local, remote, and SOCKS5 forwards."
+---
+
+A port forward tunnels TCP traffic through a host's SSH connection. Use it to reach a database, dashboard, or dev server that only listens on the server, to expose a local service to the server, or to run a SOCKS5 proxy.
+
+Open **Port forwards** under **Tools** in the sidebar to see every rule, grouped by host. The sidebar shows how many rules are running, e.g. `2 on`. Each host's detail page also has a **Port forwards** tab with that host's rules.
+
+<Frame>
+  <img src="/images/port-forwards.png" alt="Port forwards page listing rules grouped by host with type, route, status, and on/off switches" />
+</Frame>
+
+## Forward types
+
+| Type | SSH flag | What it does |
+|------|----------|--------------|
+| **Local** | `-L` | Listens on a port on this computer and forwards connections to a destination as seen from the host |
+| **Remote** | `-R` | Asks the host to listen on one of its ports and forwards connections back to a destination as seen from this computer |
+| **SOCKS5** (Dynamic) | `-D` | Runs a SOCKS5 proxy on this computer. The client picks each destination, and traffic leaves through the host. |
+
+Local and SOCKS5 forwards listen on `127.0.0.1` only. A remote forward listens on `127.0.0.1` on the host.
+
+## Add a rule
+
+<Steps>
+  <Step title="Open Add port forward">
+    On the **Port forwards** page, click **New rule**. On a host's **Port forwards** tab, click **Add port forward**.
+  </Step>
+  <Step title="Pick the host and type">
+    Select the **Host** (on the Port forwards page only), add an optional **Label** such as `Postgres tunnel`, and choose the **Type**.
+  </Step>
+  <Step title="Set the ports">
+    | Type | Fields |
+    |------|--------|
+    | **Local** | **Local port** → **Remote host** : **Remote port**. **Remote host** is as seen from the SSH host, often `localhost`. |
+    | **Remote** | **Host listen port** → **Destination host** : **Destination port**. **Destination host** is as seen from this computer. |
+    | **SOCKS5** | **SOCKS5 listen port**. Point apps at `localhost:<port>` as a SOCKS5 proxy. |
+  </Step>
+  <Step title="Save and turn it on">
+    Click **Add port forward**. The rule is created turned off. Turn on its switch to start it.
+  </Step>
+</Steps>
+
+Each host can have up to 10 rules. Ports below `1024` may need elevated permissions on macOS and Linux.
+
+### Add a forward from a session
+
+In a session header, click **Forward a port**. This adds a **Local** forward for the session's host. **Enable immediately** is on by default, so forwarding starts as soon as you click **Add port forward**.
+
+## Status
+
+| Status | Meaning |
+|--------|---------|
+| Connected | The forward is running |
+| Connecting… | Termique is opening the connection or the listener |
+| Reconnecting… | The connection dropped. Termique retries, waiting 2 seconds at first and up to 30 seconds between attempts. |
+| Waiting for unlock | Termique is locked. The forward reconnects after you unlock. |
+| Failed | The forward could not start. The error is shown next to the status, e.g. `Local port 8080 is already in use`. |
+| Off | The rule is turned off |
+
+Use the **All**, **Running**, and **Failing** views to filter the list.
+
+## How rules run
+
+- A rule opens its own connection to the host, so it does not need a terminal session. It shares that connection with your sessions to the same host when one is open.
+- Rules that are turned on start again after you sign in or unlock Termique.
+- Rules for a host behind a [jump host](/hosts#jump-hosts) tunnel through the whole chain.
+
+## Turn off or delete a rule
+
+Turn off a rule's switch to stop it. To delete a rule, click its trash icon. If the rule is running, Termique asks you to confirm because deleting stops forwarding immediately.
+
+## Sync
+
+Rules sync to your other devices, including whether each rule is turned on. Turning a rule on from another device also starts it on this one. Rules for a host kept [only on this computer](/hosts#local-hosts-and-sync) stay on this computer.

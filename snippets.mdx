@@ -1,47 +1,93 @@
 ---
 title: "Snippets"
-description: "Save and run reusable shell commands across sessions."
+description: "Save reusable commands, run them in any session, and share them in the Marketplace."
 ---
 
-Snippets are saved commands you can execute in any terminal session with one click. Use them for repetitive tasks like deploying, restarting services, or checking system status.
+A snippet is a saved command or script. Run it in the focused session from the snippet palette, or run it automatically when you connect to a host. Use snippets for deploys, service restarts, status checks, or anything you type more than once.
+
+Open **Snippets** under **Tools** in the sidebar.
 
 <Frame>
-  <img src="/images/snippets.png" alt="Snippets list showing saved commands with public and private scope" />
+  <img src="/images/snippets.png" alt="My snippets list with commands, tags, and public or private scope" />
 </Frame>
 
 ## Create a snippet
 
-1. Open the **Snippets** panel in the sidebar.
-2. Click **New snippet**.
-3. Enter a **label** (e.g. `Restart nginx`) and the **command** (e.g. `sudo systemctl restart nginx`).
-4. Click **Save**.
+<Steps>
+  <Step title="Open New snippet">
+    Click **New snippet** in the Snippets header.
+  </Step>
+  <Step title="Enter the command">
+    Type or paste the **Command**, e.g. `sudo systemctl restart nginx`. Multi-line commands are supported and are sent exactly as typed. Click **Next**.
+  </Step>
+  <Step title="Add the details">
+    Enter a **Label** (e.g. `Restart nginx`), an optional **Description**, and up to 5 **Tags** (press `Enter` after each). Turn on **Share publicly** to list it in the [Marketplace](#marketplace).
+  </Step>
+  <Step title="Save">
+    Click **Save snippet**.
+  </Step>
+</Steps>
 
 <Note>
-  Free accounts are limited to 10 snippets (forking a public snippet counts toward this limit). Upgrade to [Pro](/plans) for unlimited snippets.
+  Free accounts are limited to 10 snippets. Forking a Marketplace snippet counts toward this limit. Upgrade to [Pro](/plans) for unlimited snippets.
 </Note>
 
 ## Run a snippet
 
-Open a terminal session, then open the **Snippets** panel. Click a snippet to send the command to the active session. The command is inserted into the terminal as if you typed it.
+<Steps>
+  <Step title="Open the snippet palette">
+    In a session, press `⌘⇧K` (macOS) or `Ctrl+Shift+K` (Windows and Linux), or click **Run a snippet** in the session header.
+  </Step>
+  <Step title="Pick a snippet">
+    Type to search by label, command, or description. Press `Enter` or click the snippet.
+  </Step>
+  <Step title="Confirm">
+    Termique shows the full command. Click **Run on `<host>`** to send it to the focused pane, followed by `Enter`.
+  </Step>
+</Steps>
 
-## Edit or delete a snippet
+The palette runs a snippet only in the focused pane, and only while that session is connected. Without one, the palette copies the command to your clipboard instead. Press `⌘C` or `Ctrl+C` in the palette to copy the highlighted snippet without running it.
 
-Right-click a snippet and select **Edit** or **Delete**. Changes sync to your API backend.
+<Frame>
+  <img src="/images/snippet-palette.png" alt="Snippet palette confirming a command before it runs on the focused session" />
+</Frame>
 
-## Publish a snippet
+## Run a snippet on connect
 
-Toggle **Public** when creating or editing a snippet to list it in the Marketplace. Anyone can find and fork a public snippet. Do not publish a snippet that contains a hostname, credential, or other sensitive value.
+On a host's detail page, choose a snippet under **Startup snippet**. Termique runs it as soon as a session to that host connects. See [Startup snippet](/hosts#startup-snippet).
 
-## Public snippets
+## Manage your snippets
 
-Browse community-shared snippets in the **Marketplace** tab of the Snippets panel. Search by keyword.
+**My snippets** lists your snippets with their command, tags, scope (**Public** or **Private**), and when they were last updated.
 
-To use a public snippet, click **Fork**: this copies it to your personal snippets where you can edit it before running.
+- Type in **Filter snippets** to search labels, commands, descriptions, and tags.
+- Click **Display** to show **All**, **Public**, or **Private** snippets, and to order by **Recently updated** or **Name**.
+- Hover a row and click **Copy command** to copy it.
+- Double-click a row, or press `Enter` on it, to edit it. You can also open **More actions** (`…`) and select **Edit**.
+- To delete a snippet, open **More actions** and select **Delete**, then confirm.
 
-<Note>
-  Public snippets are read-only in the marketplace. Always review a snippet's command before running it on a production host.
-</Note>
+## Marketplace
+
+The **Marketplace** tab lists public snippets from all Termique users.
+
+- Type in **Search public snippets** to search.
+- Use **Sort** to order by **Most forked**, **Newest**, or **Best match**.
+- Use **Tag** to filter by one or more tags.
+
+Click a snippet, or its **Fork** button, to review it. The panel shows the author, fork count, description, tags, and the full command. Invisible characters, such as zero-width or text-direction characters, are shown as markers like `⟨U+202E⟩` so the command you read is the command that runs.
+
+Click **Fork to my snippets** to save a private copy you can edit and run. Click **Report snippet** to flag it as **Destructive**, **Malicious**, **Spam**, or **Other**.
+
+<Warning>
+  Read a community command in full before you run it, especially on a production host. If you attach a forked snippet as a host's startup snippet, Termique asks you to confirm because it will run unattended on every connect.
+</Warning>
+
+### Publish a snippet
+
+Turn on **Share publicly** when you create or edit a snippet. Anyone can then find and fork it. Do not publish a snippet that contains a hostname, credential, or other sensitive value.
+
+A public snippet that receives reports can be hidden or removed from the Marketplace. It then shows a **hidden** or **removed** badge in **My snippets**. You can still use it yourself.
 
 ## Sync
 
-Snippets are synced to your API backend. They are not end-to-end encrypted. Do not store credentials or sensitive values in snippet commands.
+Snippets sync through the API to your other devices. They are not end-to-end encrypted. Do not store credentials or sensitive values in snippet commands.

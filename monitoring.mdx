@@ -1,42 +1,59 @@
 ---
 title: "Monitoring"
-description: "Track CPU, RAM, and disk usage on your hosts, and get alerted when a threshold is crossed."
+description: "Install a lightweight agent on a host to track CPU, memory, and disk usage, and get alerted when a threshold is crossed."
 ---
 
-Termique can install a lightweight agent on your Linux server to report CPU, RAM, and disk usage back to your account. Metrics update every 30 seconds. You can set alert rules to get notified when usage crosses a threshold, or when a server stops reporting entirely.
+The Termique monitoring agent runs on a Linux host and reports CPU, memory, and disk usage to your account every 30 seconds. You see live values and history in the desktop app, and you can add alert rules that notify you when usage crosses a threshold or the host stops reporting.
+
+<Note>
+  Monitoring works on synced hosts. On Free, a host kept only on this computer shows **This host is only on this computer** on its **Monitoring** tab. Click **Sync this host** to enable monitoring.
+</Note>
 
 ## Install the agent
 
-1. Open a host's detail view and find the **Monitoring** section.
-2. Click **Generate token**.
-3. Review what the agent collects, then click **Agree & continue**. Termique generates a one-time install command.
-4. Run the command on your server:
-   - Click **Run on `<host>`** to execute it automatically over an open SSH session, or
-   - Copy the command and run it manually over your own connection.
+1. Open the host and select the **Monitoring** tab.
+2. Click **Install agent**.
+3. Review what the agent does, then click **Agree & continue**. Termique creates an agent token and an install command for this host.
+4. Optional: set up [security events](#security-events) in the same dialog.
+5. Install the agent:
+   - Click **Run over SSH** to open a session to the host and run the command there, or
+   - Click **Copy** under **Run on host** and run the command yourself.
+
+The dialog shows **Waiting for the agent to check in…** until the first report arrives, then **Agent connected**, and closes. The **Monitoring** tab then shows live metrics for the host.
+
+<Frame>
+  <img src="/images/install-agent.png" alt="Install the agent dialog with the masked install command, Detect security sources, and the Security events switch" />
+</Frame>
+
+The install command has this form. The token and server ID are masked on screen, and **Copy** and **Run over SSH** use the real values:
+
+```bash
+curl -fsSL https://get.termique.app | TERMIQUE_TOKEN=<token> TERMIQUE_SERVER_ID=<id> sh
+```
 
 <Note>
-  The agent token is shown once. Expand **Manual setup** to show the token before closing the dialog if you need it, or generate a new one later.
+  The agent token is shown once. Expand **Manual setup - show token** to see and copy it before you close the dialog. Anything you copy from this dialog is cleared from the clipboard after 1 minute.
 </Note>
 
-The agent connects within about 30 seconds. Once it checks in, the Monitoring section confirms the agent is connected and shows live CPU, RAM, and disk tiles for that host.
+If you close the dialog before the agent checks in, the **Monitoring** tab shows **Waiting for the agent**. Click **Show install command** to get a fresh command, or **Refresh** to check again.
 
 ## What the agent collects
 
-- CPU, RAM, and disk usage, every 30 seconds.
+- CPU, memory, and disk usage, every 30 seconds. Memory includes cached and swap figures when the host reports them.
+- Uptime, and the disk device and mount point it measures.
 - Nothing else: no file contents, command output, or credentials.
-- The agent only sends data outward. It never accepts inbound connections.
 
-The install script writes a config file holding an opaque token at `~/.config/termique-agent/config.toml` (`chmod 600`) and registers a systemd service.
+The agent only sends data. It never accepts inbound connections. The install script writes a config file holding an opaque token at `~/.config/termique-agent/config.toml` (`chmod 600`) and registers a `systemd` service.
 
 ## Config file
 
-Most settings are covered elsewhere in this page and set through the app. To edit `config.toml` directly, for example on a server you manage over a plain SSH session:
+The app sets most options for you. To edit `config.toml` directly, for example on a host you manage over a plain SSH session:
 
 | Field | Default | Description |
 |---|---|---|
-| `token` | - | Set automatically by the install command. Don't edit by hand. |
-| `server_id` | - | Set automatically by the install command. Don't edit by hand. |
-| `api_url` | `https://monitor.termique.app` | Where the agent reports. Change this only if you're self-hosting the Termique API backend. |
+| `token` | - | Set by the install command. Do not edit. |
+| `server_id` | - | Set by the install command. Do not edit. |
+| `api_url` | `https://monitor.termique.app` | Where the agent reports. Change it only if you self-host the Termique API backend. |
 | `interval` | `30` | Seconds between metric reports. |
 | `debug` | `false` | Verbose logging, for troubleshooting. |
 | `auto_update` | `true` | See [Automatic updates](#automatic-updates). |
@@ -45,104 +62,144 @@ Most settings are covered elsewhere in this page and set through the app. To edi
 | `security_events_flush_interval` | `120` | Seconds between security-event batch sends. |
 | `security_events_max_batch` | `200` | Maximum events sent per batch. Extra events in the same window are dropped, not queued. |
 
-After editing, restart the agent to apply changes:
+Restart the agent to apply changes:
 
 ```bash
 sudo systemctl restart termique-agent
 ```
 
 <Warning>
-  Reinstalling generates a fresh `config.toml` and overwrites any manual edits. Use **Automatic updates** (below) for routine version updates, not a fresh reinstall.
+  Reinstalling writes a fresh `config.toml` and overwrites manual edits. Use [automatic updates](#automatic-updates) for routine version updates, not a reinstall.
 </Warning>
 
 ## Security events
 
-Optional, off by default. When enabled, the agent watches for a fixed set of security-relevant patterns and reports them as structured events, never raw log contents:
+Optional, off by default. When enabled, the agent watches a fixed set of sources and reports structured events, never raw log lines or request bodies:
 
-- Failed and successful SSH logins.
+- Failed and successful SSH logins, from `auth.log` or `secure`.
 - `fail2ban` bans and unbans, if `fail2ban` is installed.
-- HTTP error-rate spikes: many 4xx/5xx responses from one IP within a minute.
-- HTTP path-targeted brute force: many requests to the same URL from one IP within a minute, regardless of response status. This catches login-form brute force, which usually returns `200` for every attempt rather than an error.
+- HTTP error-rate spikes: many 4xx and 5xx responses from one IP within a minute.
+- HTTP path-targeted brute force: many requests to the same path from one IP within a minute, whatever the response status. This catches login-form brute force, which usually returns `200` for every attempt.
 
-Security events power [Incident investigation](/incident-investigation). They are not shown as a standalone log in the app.
+Security events are evidence for [Incident investigation](/incident-investigation). The app does not show them as a standalone log.
 
 ### Enable it
 
-Turn on **Enable security event capture** when generating the install command. To also detect HTTP brute force, set **Reverse-proxy log path** to your web server's access log, for example `/var/log/nginx/access.log`.
+In the install dialog:
 
-On an agent that's already installed, add the fields directly to `config.toml` instead: see [Config file](#config-file) above.
+1. Optional: click **Detect** under **Detect security sources**. Termique checks the host over SSH for an auth log, `fail2ban`, and a reverse-proxy access log, then fills in the settings below.
+2. Turn on **Security events**.
+3. To detect HTTP brute force, enter your web server's access log under **Reverse proxy access log**, for example `/var/log/nginx/access.log`. Use an absolute path with letters, numbers, `.`, `_`, `-`, and `/` only. Any other path is left out of the install command.
+
+On an agent that is already installed, add the fields to `config.toml` instead. See [Config file](#config-file).
+
+### Check that capture works
+
+While the agent reports, the host's **Monitoring** tab lists each source under **Security sources** as **Active** or **Inactive**. If capture is on but no source was found, the tab warns that investigations will have no security evidence until you fix it.
 
 ### Retention
 
-Captured events are batched and sent every 2 minutes. Events are kept for 14 days on Free, 90 days on Pro.
+The agent sends captured events in batches every 2 minutes. Events are kept for 14 days on Free and 90 days on Pro.
 
 ## View metrics
 
-- **Host detail**: the Monitoring section on a host shows live CPU/RAM/disk tiles, color-coded (green under 70%, amber 70–89%, red 90%+).
-- **Monitoring page**: lists every paired server, online servers first, each with a one-hour trend sparkline per metric. Click a server to see its full metrics history.
+### On the host
 
-A server counts as online if it has reported within the last 2 minutes.
+The host's **Overview** tab shows a **Health** card with live CPU, memory, and disk usage. The **Monitoring** tab shows:
+
+- The agent status: **Reporting** with the time of the last update, or **Agent offline** with when it was last seen.
+- CPU, memory, and disk charts for **1 hour**, **24 hours**, or **7 days**.
+- **View charts**, which opens the full detail page.
+
+### Monitoring page
+
+Click **Monitoring** in the sidebar to see every host with a reporting agent. The sidebar shows how many agents are reporting, for example `3/4`.
+
+- Hosts are grouped by [group](/groups). Each row shows CPU, memory, and disk usage, when the agent last reported, and any alert that is on.
+- **Hosts** lists all monitored hosts. **Alerts** lists hosts where an enabled rule is over its threshold right now. **Not monitored** lists synced hosts without an agent, each with **Install agent**.
+- Values refresh every 10 seconds. A host counts as online if it reported within the last 2 minutes.
+- Usage of 70% or more is highlighted.
 
 <Frame>
-  <img src="/images/monitoring.png" alt="Monitoring page listing paired servers with live CPU, RAM, and disk sparklines" />
+  <img src="/images/monitoring.png" alt="Monitoring page listing hosts by group with CPU, memory, and disk usage, agent status, and alerts" />
 </Frame>
 
-Click a server to see its full history, live values, and system details (IP, OS, memory, disk, uptime):
+### Detail page
+
+Click a host on the Monitoring page, or **View charts** on its **Monitoring** tab, to open its detail page:
+
+- **Live resources**: CPU, memory (with cached memory), disk (with mount point and file system), and swap if the host has any, from the most recent report. Bars turn amber at 70% and red at 90%.
+- **History**: CPU, RAM, and disk on one chart, for `1h`, `6h`, `24h`, `7d`, `30d`, or `1y`.
+- The side panel: status, uptime, last seen, linked host, access (**Owner** or **Shared with you**), and the server ID.
 
 <Frame>
-  <img src="/images/monitoring-detail.png" alt="Server monitoring detail page showing CPU history chart and live CPU, RAM, disk gauges" />
+  <img src="/images/monitoring-detail.png" alt="Monitoring detail page with live CPU, memory, and disk bars, the history chart, and the agent side panel" />
 </Frame>
+
+## Data retention
+
+Raw reports are kept for 24 hours on every plan. Longer ranges use rolled-up averages, kept by plan:
+
+| Resolution | Free | Pro |
+|---|---|---|
+| Raw (every report) | 24 hours | 24 hours |
+| 5 minutes | 7 days | 30 days |
+| 1 hour | 30 days | 1 year |
+| 1 day | 90 days | 3 years |
+
+The `1y` range needs Pro. For a shared host, the owner's plan sets the limit.
 
 ## Alert rules
 
-Add an alert rule to get notified when a server crosses a threshold:
+Add rules from the **Alerts** section of the host's **Monitoring** tab. It appears once the agent has reported at least once. Click **Add alert rule** and set:
 
 | Field | Options |
-|-------|---------|
-| Metric | CPU, RAM, Disk, or Offline |
-| Threshold | 1–99% (not applicable to Offline, which fires after 2 minutes with no report) |
-| Cooldown | 5 min – 24 h: minimum time between repeat alerts for the same rule |
-| Enabled | On/off toggle |
+|---|---|
+| **Condition** | **CPU**, **RAM**, **Disk**, or **Offline** |
+| **Threshold** | `1` to `99` percent. Default `85`. Not used for **Offline**, which fires when the host stops reporting for 2 minutes. |
+| **Cooldown** | `5 min`, `15 min`, `30 min`, `1 h`, `2 h`, `6 h`, or `24 h`. Default `30 min`. The minimum time between repeat alerts for the rule. |
+| **Enabled** | Start evaluating the rule right away. |
 
-Each server can have up to 20 alert rules. Manage rules from the host's Monitoring section on desktop, or from a paired server's **Alerts** screen on mobile.
+A CPU, RAM, or Disk rule fires when a report is above the threshold. Each host can have up to 20 rules. Turn a rule on or off with its switch. Deleting a rule shows **Undo** for a few seconds.
+
+You can also manage rules on the [mobile app](/mobile) from a host's **Manage alerts** screen.
 
 ## Notifications
 
-Desktop shows alerts only while Termique is running. The mobile app receives push notifications for alerts even when the desktop app is closed. Tapping one opens the alert rules screen for that server.
+- **Desktop**: while Termique is running, it checks your rules every minute and shows a system notification when one fires. Available on every plan.
+- **Mobile push**: on Pro, alerts arrive as push notifications on the [mobile app](/mobile), even when the desktop app is closed. The notification names the host and metric, for example `CPU threshold exceeded`, but not the value. Tap it to open the host's alert rules.
 
 <Note>
-  Background push notifications (alerts delivered while the desktop app is closed) require a Pro subscription.
+  Push notifications require a Pro subscription. On Free, rules only notify through the desktop app.
 </Note>
 
 ## Automatic updates
 
-The agent checks for a new version once a day and updates only if one is available. If it's already on the latest version, nothing happens: no reinstall, no restart.
+The agent checks for a new version once a day and updates only if one is available. If it is already on the latest version, nothing happens: no reinstall, no restart.
 
-If an update fails to start correctly, the agent restores the previous version and restarts automatically. No manual recovery is needed.
+If an update fails to start correctly, the agent restores the previous version and restarts. No manual recovery is needed.
 
-To skip automatic updates:
+To turn off automatic updates:
 
 - At install time, set `TERMIQUE_AUTO_UPDATE=false` before running the install command.
-- On an agent that's already installed, add `auto_update = false` to `~/.config/termique-agent/config.toml`. This takes effect on the next daily check, no restart required.
+- On an installed agent, add `auto_update = false` to `~/.config/termique-agent/config.toml`. This takes effect on the next daily check, with no restart.
 
 <Note>
-  Opting out means the agent stays on its currently installed version until you update it yourself by reinstalling.
+  With automatic updates off, the agent stays on its installed version until you reinstall it.
 </Note>
 
-## Revoke or reinstall
+## Revoke, reinstall, or uninstall
 
-- **Revoke**: stops the agent from reporting within 30 seconds. The agent keeps running on the server until you remove it. Uninstall with:
+- **Revoke**: on the host's **Monitoring** tab, click the trash icon (**Revoke monitoring token**), or click **Revoke token** on the detail page. Confirm with **Revoke token**. The agent stops reporting within 30 seconds but keeps running on the host until you uninstall it.
+- **Reinstall**: on the **Monitoring** tab, click the reinstall icon (**Reinstall agent with a new token**). Termique revokes the current token and shows a new install command, without the terms step.
+- **Uninstall**: run this on the host. The detail page shows it under **Uninstall** with a copy button.
 
   ```bash
   curl -fsSL https://get.termique.app/uninstall | sh
   ```
 
-- **Reinstall**: revokes the current token and generates a new one, skipping the terms review since you've already agreed once.
+An agent that stops reporting for 5 days is revoked automatically, and you get an email. Reinstall it to resume monitoring.
 
-## Data retention
+## Shared hosts
 
-Raw metrics are kept for 24 hours. Rolled-up history (5-minute, hourly, and daily aggregates) is kept longer on Pro accounts than on Free.
-
-## Shared servers
-
-If a host was shared with you and the owner installed the monitoring agent, you can view its metrics but not manage its alert rules or revoke its token. See [Sharing](/sharing).
+If a host is shared with you and the owner installed the agent, you can see its metrics and history. Installing, revoking, and alert rules stay with the owner. See [Sharing](/sharing).

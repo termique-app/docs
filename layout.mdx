@@ -1,0 +1,52 @@
+---
+title: "Layout and navigation"
+description: "The sidebar, top bar, and command palette, and where each part of Termique lives."
+---
+
+After you unlock Termique, you land on the **Hosts** page. The window has three parts: the sidebar on the left, a thin top bar, and the content panel.
+
+<Frame>
+  <img src="/images/hosts.png" alt="Termique window with the sidebar, top bar, and the Hosts page in the content panel" />
+</Frame>
+
+## Sidebar
+
+The sidebar holds your open sessions, your hosts, and the tools. From top to bottom:
+
+- **Search**: opens the command palette.
+- **All hosts**: opens the [Hosts](/hosts) page. The number is your host count.
+- **Sessions**: your open terminal sessions and investigations. Click **+** to open a local shell. Hover a session and click the close button to end it.
+- **Hosts**: your groups shown as folders, followed by hosts that are in no group. Click a folder to open the [group](/groups), or click a host to open its page. Use the buttons next to the heading to add a **New folder** or a **New host**.
+- **Tools**: **Snippets**, **SSH keys**, **Port forwards**, **Monitoring**, **Command logs**, **Investigations**, and **Teams**. On Free, **Command logs** carries a **Pro** badge and opens an upgrade prompt.
+
+Each host shows a status dot:
+
+| Dot | Meaning |
+|-----|---------|
+| Green | Connected |
+| Gray | Not connected |
+| Amber | Monitoring agent offline |
+
+A link icon marks a host shared with you. A monitor icon marks a host kept only on this computer.
+
+To collapse the sidebar to an icon rail, click **Hide sidebar** next to the logo. Click **Show sidebar** to expand it again.
+
+## Top bar
+
+The top bar shows:
+
+- **Sync status**: whether your data is synced. If sync fails, click **Retry**.
+- **Notifications**: pending share invites. A red dot means an invite is waiting. Accept or decline it from the panel.
+- **Account menu**: your avatar. It shows your plan (**Free** or **Pro**) and holds a light and dark **Theme** switch, **Settings**, **About**, **Report bug**, **Lock screen**, and **Sign out**.
+
+<Tip>
+  To step away, use **Lock screen**. It locks the vault and keeps your local data. **Sign out** disconnects live sessions and clears this device's local database.
+</Tip>
+
+## Command palette
+
+Press `⌘K` on macOS or `Ctrl+K` on Windows and Linux, or click **Search** in the sidebar. The palette searches hosts, sessions, pages, actions, and keyboard shortcuts. Select a host to connect to it.
+
+## Web dashboard
+
+Billing, devices, and extra share recipients are managed in the web dashboard at [termique.app/dashboard](https://termique.app/dashboard), not in the desktop app. Links such as **Manage billing** and **Manage devices** open it in your browser. See [Plans and billing](/plans).

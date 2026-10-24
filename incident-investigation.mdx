@@ -1,48 +1,118 @@
 ---
 title: "Incident investigation"
-description: "Ask the AI assistant to investigate an issue across multiple hosts and produce a structured report."
+description: "Have the AI assistant investigate an incident across one or more hosts and write a structured report."
 ---
 
-Incident investigation correlates live commands, historical metrics, and captured security events across several hosts at once, then produces a structured report with a summary, timeline, root cause, and recommendations.
+An investigation is an AI-led incident review. You describe what happened and when it started. The assistant correlates live commands, monitoring history, and captured security events across the hosts you pick, then writes a report with a verdict, timeline, root cause, findings, and recommendations.
 
 <Note>
   Incident investigation is a [Pro](/plans) feature.
 </Note>
 
+## Requirements
+
+- Each host needs a [monitoring agent](/monitoring) that is reporting. Hosts without one do not appear in the host pickers.
+- Investigations use hosted AI. Each message you send uses one hosted prompt from your daily quota, even if the assistant is set to a custom endpoint. See [AI assistant](/ai-assistant#hosted).
+- For security evidence, turn on [security event capture](/monitoring#security-events) on the host.
+
 ## Start an investigation
 
-1. From a host's detail view, click **Generate Report**.
-2. Select the hosts involved and a time window (last hour, 6 hours, 24 hours, or 7 days).
-3. Click **Start investigation**.
+You can start an investigation from three places:
 
-The investigation opens as its own tab, alongside your terminal sessions. Ask a question, for example "why is CPU usage high?" or "check for suspicious logins."
+- **Investigations** in the sidebar. Pick hosts with the host picker next to the search field, then click **Investigate**. The page also lists open investigations and past reports.
+- A host's detail page. Click **Investigate this host** in the side panel. It appears when the host's agent is reporting.
+- The **Monitoring** page. Click **Generate report** in the header, select a host, and click **Start investigation**.
+
+<Frame>
+  <img src="/images/investigations.png" alt="Investigations page with the describe-a-problem field, host picker, and a list of open investigations and reports" />
+</Frame>
+
+### Describe the incident
+
+A new investigation opens on **What happened?**
+
+1. Under **When did it start?**, pick **Last hour**, **Last 6 hours**, **Last 24 hours**, or **Pick a time** to enter the start time.
+2. Pick a suggested prompt, or describe the incident in your own words, for example `API got slow after 11:00`.
+
+The assistant focuses metrics, logs, and the report timeline on that window. The case file on the right shows it as **Incident** `since <time>`.
+
+<Note>
+  If you type a description on the Investigations page before clicking **Investigate**, the investigation starts right away, without an incident window. Leave the field empty to set the window first.
+</Note>
 
 ## How it works
 
-The assistant gathers evidence using:
+The assistant gathers evidence with:
 
-- **Live commands** on the selected hosts, run over your existing SSH sessions (or new ones opened for the investigation).
-- **Historical metrics** (CPU, RAM, disk) from [Monitoring](/monitoring), for time ranges before the investigation started.
-- **Security events** (failed logins, bans, HTTP brute force), if [security event capture](/monitoring#security-events) was enabled on the host.
+- **Live commands** on the selected hosts, over your open SSH sessions. If a host has no connected session, the investigation opens one.
+- **Monitoring history**: CPU, memory, and disk from [Monitoring](/monitoring), including ranges before the investigation started.
+- **Security events**: SSH logins, `fail2ban` bans, and HTTP spikes and brute force, if capture is on for the host. One query covers up to 7 days.
 
-Read-only commands (listing files, checking process status, reading logs) run automatically. Anything else asks for confirmation first, the same as [auto-execute](/ai-assistant#auto-execute) in a regular terminal session, but stricter: there is no setting to bypass confirmation in an investigation.
+Read-only commands, such as listing files, checking process status, or reading logs, run on their own. Termique decides this on your computer from the command text itself, not from the risk label the model gives. Every other command waits for you with **Skip**, **Edit**, and **Run**:
+
+- A dot shows the model's risk label: low, medium, or high.
+- A **high risk** command needs a second click on **Confirm**.
+- A command that matches a destructive pattern is marked **Flagged**. Click **Run anyway**, then **Confirm**, to run it.
+- If the assistant does not say which host a command is for, pick one under **Run on**.
+
+There is no setting to skip these checks in an investigation.
+
+After 5 automatic rounds, the assistant pauses. Send a message to keep investigating, or finish with a report. Click **Stop** to interrupt a reply.
+
+<Frame>
+  <img src="/images/investigation.png" alt="Investigation in progress with the assistant's commands, a command waiting for approval, and the case file panel" />
+</Frame>
+
+### Case file
+
+The panel on the right tracks the investigation:
+
+- **Status**, such as **Investigating**, **Waiting for you**, or **Report ready**.
+- **Incident**, **Started**, and **Commands** (how many ran automatically, ran by you, are waiting, or were skipped).
+- **Hosts**, with each host's connection state.
+- **Findings**, a summary of the report once it exists.
 
 ## The report
 
-Click **View report** once the assistant has gathered enough evidence. The report includes:
+The assistant submits the report when it has enough evidence. To end early, click **Finish with report**. The assistant stops running commands and writes the report from what it has, calling out what it could not confirm.
+
+Click **View report** to open it:
 
 | Section | Contents |
 |---|---|
-| Summary | A short description of what was found. |
-| Timeline | Key events, in order, with severity. |
+| Verdict | The main takeaway, in one line and a short description. |
+| Summary | What was found. |
+| Key metrics | The numbers that matter, with severity. |
+| Timeline | Key events in order, with severity. |
 | Root cause chain | The steps that led to the issue. |
-| Findings | Individual observations, each tagged `confirmed` (backed by an actual command or metric result) or `partial` (inference). |
-| Recommendations | Grouped into quick wins, medium-term, and larger effort. |
+| Alternative explanations | Other theories, each marked `endorsed`, `partially endorsed`, or `refuted`. |
+| Findings | Observations with severity (`critical`, `warning`, `info`), confidence (`confirmed` or `partial`), evidence, impact, and what to do. |
+| Recommendations | The top priorities for this week, then **Quick win**, **Medium-term**, and **Larger effort**. |
+| Methodology | How the evidence was gathered. |
 
-A finding is marked **not verifiable from collected evidence** if it cites a number that doesn't appear anywhere in the commands or metrics actually gathered during the investigation.
+<Frame>
+  <img src="/images/investigation-report.png" alt="Incident investigation report dialog with the verdict, summary, timeline, and findings" />
+</Frame>
 
-Save the report to disk or copy it as Markdown from the report dialog.
+### Evidence check
+
+Termique cross-checks each finding against the command output and data the investigation collected. A finding shows one of:
+
+- **Automated check matched a cited number to collected evidence**
+- **Could not automatically match this claim to collected evidence**
+- **No numeric claim to automatically check**
+
+This is a best-effort check, not proof. Use your judgment before you act on a finding.
+
+### Export
+
+- **Copy as Markdown** copies the report to the clipboard.
+- **Save report** saves it as an HTML file.
+
+## Past investigations
+
+Reports are saved to your account. Open a past report from the **Reports** view on the Investigations page, or from **Investigation history** on the Monitoring page. The [mobile app](/mobile) shows the same reports, read-only, under **Settings** > **Investigations**.
 
 ## Multiple investigations
 
-Each investigation is its own tab. Starting a new one doesn't close or interrupt an investigation already in progress.
+Each investigation is listed in the sidebar with your open sessions, under its first host's name. Starting a new one does not interrupt an investigation in progress. Click **Close investigation** to close one.

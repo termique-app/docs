@@ -3,57 +3,191 @@ title: "Hosts"
 description: "Add, organize, and connect to SSH servers."
 ---
 
-A host is a saved SSH server entry. It stores the connection details and an encrypted credential so you can connect with one click.
+A host is a saved SSH server entry. It stores the address, user, authentication method, and an encrypted credential, so you can connect without retyping anything.
 
 <Frame>
-  <img src="/images/hosts.png" alt="Hosts list showing saved SSH servers with live CPU and RAM" />
+  <img src="/images/hosts.png" alt="Hosts list with folders, live CPU and memory meters, and the Connect button on the selected row" />
 </Frame>
+
+## The hosts list
+
+Click **All hosts** at the top of the sidebar to open the list. Each row shows the host's status, label, `user@host` address, up to 3 tags, live CPU and memory (when a monitoring agent reports), and when you last connected.
+
+Use the views at the top to narrow the list:
+
+| View | Shows |
+|------|-------|
+| **All hosts** | Every host you can access |
+| **Live** | Hosts with a connected session |
+| **Needs attention** | Hosts whose monitoring agent stopped reporting |
+| **Not monitored** | Hosts without a monitoring agent |
+
+Type in **Filter by name, host, tag** to match a host's label, address, username, or tags. Click **Display** to change how the list is built:
+
+- **Grouping**: **Folder** lists hosts under their groups, with ungrouped hosts under **No folder**. **None** shows one flat list.
+- **Ordering**: **Last connected**, **Date added**, or **Name**.
+- **Filter**: pick one or more groups or tags.
+
+The list works from the keyboard:
+
+| Key | Action |
+|-----|--------|
+| `↑` `↓` | Move the selection |
+| `Enter` | Connect to the selected host |
+| `Shift+Enter` or `Space` | Open the host's detail page |
+| `Esc` | Clear the filter |
+
+The sidebar lists the same hosts under **Hosts**, with groups shown as folders. A dot shows whether the host has a connected session. Clicking a host in the sidebar opens its detail page.
 
 ## Add a host
 
-1. Click **Add host** in the sidebar (or press the `+` button next to the host list).
-2. Fill in the fields:
+<Steps>
+  <Step title="Open Add host">
+    Click **New host** in the hosts list header, or the **+** button next to **Hosts** in the sidebar. You can also press `⌘N` (macOS) or `Ctrl+Shift+N` (Windows and Linux), or choose **Create host** in the command palette.
+  </Step>
+  <Step title="Fill in the connection">
+    | Field | Description |
+    |-------|-------------|
+    | **Label** | A name for the host, e.g. `web-prod-01` |
+    | **Host or IP** | Hostname or IP address. Pasting `host:port` fills in **Port** for you. |
+    | **Port** | SSH port, default `22` |
+    | **Username** | The SSH user on the server, e.g. `root` |
+  </Step>
+  <Step title="Choose how to authenticate">
+    Pick one of the **Authentication** options. See [Authentication](#authentication) below.
+  </Step>
+  <Step title="Organize it (optional)">
+    Add the host to one or more **Groups**, type **Tags** (press `Enter` or `,` after each), and pick a jump host under **Connect via** if the server is behind a bastion.
+  </Step>
+  <Step title="Save">
+    Click **Add host**. The credential is encrypted on this device before it is stored or synced. Termique opens the new host's detail page.
+  </Step>
+</Steps>
 
-   | Field | Description |
-   |-------|-------------|
-   | **Label** | A friendly name, e.g. `web-prod-01` |
-   | **Host** | Hostname or IP address |
-   | **Port** | SSH port, default `22` |
-   | **Username** | The SSH user on the remote server |
-   | **Auth type** | `password` or `key` |
-   | **Credential** | The password or private key |
-   | **Tags** | Optional comma-separated labels for filtering |
-
-3. Click **Save**. The credential is encrypted with your DEK before it is stored.
+<Frame>
+  <img src="/images/host-form.png" alt="Add host sheet with Stored SSH key selected under Authentication" />
+</Frame>
 
 <Note>
-  Free accounts are limited to 3 hosts. Upgrade to [Pro](/plans) for unlimited hosts.
+  On the Free plan, 3 hosts sync to your other devices. See [Local hosts and sync](#local-hosts-and-sync) and [Plans](/plans).
 </Note>
 
-## Edit a host
+## Authentication
 
-Right-click a host in the sidebar and select **Edit**, or open the host detail and click the edit icon. Changes are saved locally and synced to your API backend if sync is enabled.
+The **Authentication** control has three options:
 
-## Delete a host
+| Option | What you provide |
+|--------|------------------|
+| **Password** | The SSH password. Use the eye icon to show or hide it. |
+| **Stored SSH key** | A key from [SSH keys](/ssh-keys). The picker lists each key's name and algorithm. |
+| **Private key** | Paste a private key. If the key is passphrase-protected, a **Passphrase** field appears. |
 
-Right-click a host and select **Delete**. This removes the entry from local storage and the API backend. Active sessions connected to that host are not affected until you disconnect.
+A pasted private key is checked as you type. When you save, Termique imports it into [SSH keys](/ssh-keys) as `<label> key`, encrypted, and binds the host to it. Other hosts can then use the same key.
+
+If you have no stored keys yet, the **Stored SSH key** option offers **Go to SSH keys**.
+
+## Jump hosts
+
+Use **Connect via** to reach a server that only accepts connections from a bastion. Pick any saved host as the jump host, or leave it at **None (direct connection)**.
+
+- The jump host can have its own **Connect via**, so you can chain hops. A chain can be up to 8 hops long.
+- Termique leaves out any host that would create a loop.
+- Each hop authenticates with that host's own saved credential.
+- Terminal sessions, SFTP, and [port forwards](/port-forwarding) all go through the chain.
+
+The host's detail page shows the chain under **Jump host**. In a session, the chain appears as **Via** in the session menu.
 
 ## Connect
 
-Click a host in the sidebar. Termique opens a terminal session. The credential is decrypted and used to establish the SSH connection. It is never stored or logged in plaintext.
+To open a session, do any of the following:
+
+- Click **Connect** on a row in the hosts list, or select the row and press `Enter`.
+- Right-click a host and select **Connect**.
+- Click **Open session** on the host's detail page.
+- Open the command palette (`⌘K` or `Ctrl+K`) and pick the host under **Quick connect**.
+
+Termique decrypts the credential and opens a [terminal session](/terminal). Each connect opens a new session, so you can have several sessions to the same host.
+
+If this device has no stored credential for a host you own, the detail page shows **Credential not stored on this device**. Click **Add credential** to enter it.
+
+## Host detail
+
+Click a host in the sidebar, double-click it in the list, or select **Details** from its context menu.
 
 <Frame>
-  <img src="/images/host-detail.png" alt="Host detail page showing connection info, sharing, command logging, and monitoring" />
+  <img src="/images/host-detail.png" alt="Host detail page with the Overview tab, Health strip, and connection properties" />
 </Frame>
+
+The header has **Edit host**, **Share host**, **SFTP** (opens a session straight into [Files](/sftp)), and **Open session**. The tabs are:
+
+| Tab | Contents |
+|-----|----------|
+| **Overview** | **Health** (CPU, memory, and disk from the monitoring agent), **Port forwards**, **Startup snippet**, and recent **Activity** |
+| **Monitoring** | Monitoring agent setup and metrics. See [Monitoring](/monitoring). |
+| **Port forwards** | This host's forwarding rules. See [Port forwarding](/port-forwarding). |
+| **Logging & activity** | The command logging switch and the host's command log. See [Command logs](/command-logs). |
+| **Sharing** | Who has access. See [Sharing](/sharing). |
+
+The side panel shows the host's status, groups, tags, address, port, user, authentication, jump host, detected system, sharing, command log state, monitoring agent state, and when it was last connected. It also has **Copy connection string**, **Duplicate**, and **Delete host**.
+
+### Startup snippet
+
+Under **Overview**, pick a [snippet](/snippets) in **Startup snippet** to run it as soon as a session to this host connects, e.g. to attach to a `tmux` session. The choice is stored on this device only.
+
+<Warning>
+  If you pick a snippet you forked from the Marketplace, Termique shows the command and asks you to confirm. It runs automatically on every connect, so read it first.
+</Warning>
+
+## Edit a host
+
+Click **Edit host** (the pencil) on the detail page, or right-click the host and select **Edit**. The **Edit host** sheet has the same fields as **Add host**.
+
+- Leave the password blank, or the key picker empty, to keep the current credential.
+- Switching from a key to **Password** requires a new password.
+
+Click **Save changes**. If you change the address, the next connection asks you to confirm the new address with your master password before the credential is sent. See [Host key and address checks](#host-key-and-address-checks).
+
+## Duplicate a host
+
+Right-click a host and select **Duplicate**, or click **Duplicate** on its detail page. The copy is named `<label> (copy)` and gets the same address, user, tags, and credential. Group membership and the jump host are not copied.
+
+## Delete a host
+
+Right-click a host and select **Delete**, or click **Delete host** on its detail page. Confirm in the dialog. This removes the host and its saved credential. Groups that contained it are not deleted.
+
+## Host key and address checks
+
+The first time you connect to a host, Termique saves the server's host key. Later connections must present the same key.
+
+If the key changes, the session shows **Host key changed - connection blocked** and sends nothing. This happens when a server is rebuilt, but it is also what an intercepted connection looks like. Compare the fingerprint shown with the server's own key:
+
+```bash
+ssh-keygen -lf /etc/ssh/ssh_host_*_key.pub
+```
+
+If it matches, click **Trust new key…**, tick the confirmation, enter your master password, and click **Trust key and reconnect**.
+
+A saved credential is also tied to the address it was first used with. If the address changes, for example after an edit or a sync from another device, the session shows **Host address changed**. If you made the change, click **I changed it - confirm…**, enter your master password, and click **Confirm and reconnect**. If you did not, close the session and leave it blocked.
 
 ## Tags
 
-Tags are free-form strings attached to a host. Use them to filter the host list. A host can have multiple tags, e.g. `production`, `aws`, `us-east-1`.
+Tags are free-form labels on a host, e.g. `production`, `aws`, `us-east-1`. Termique stores them in lowercase. Use them to filter the hosts list, through **Filter by name, host, tag** or **Display** > **Filter**.
+
+## Local hosts and sync
+
+On the Free plan, 3 of your hosts sync to your other devices. When local hosts are available on your account, you can add more hosts and they stay on this computer only, with their credentials and port forwards.
+
+- The hosts list header shows **Sync n/3**. Click it to see which hosts are **Synced** and which are **On this computer**, and to **Sync** or **Swap** them.
+- Right-click a local host and select **Sync to other devices**. If all sync slots are in use, Termique asks which synced host to swap out.
+- Monitoring, sharing, and command logging work only on synced hosts.
+- Local hosts are not backed up. In the **Sync** dialog, click **Export** to save them to a file encrypted with your account key, and **Import** to restore them on another computer signed in to the same account.
+
+Pro syncs every host. See [Plans](/plans).
 
 ## Shared hosts
 
-Hosts shared with you by a team member appear in the host list after you accept the invite. See [Sharing](/sharing) for details.
+Hosts shared with you appear in the hosts list and the sidebar with a link icon after you accept the invite. You can connect to them, but only the owner can edit or share them. To leave a shared host, right-click it and select **Remove shared**. See [Sharing](/sharing).
 
 ## Monitoring
 
-Install the Termique monitoring agent on a host's server to see live CPU, RAM, and disk usage, and set up alerts. See [Monitoring](/monitoring).
+Click **Install agent** on a host's row, or open the **Monitoring** tab, to install the Termique monitoring agent. The list then shows live CPU and memory, and the detail page shows **Health**. See [Monitoring](/monitoring).

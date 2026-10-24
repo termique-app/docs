@@ -1,55 +1,110 @@
 ---
 title: "Command logs"
-description: "Audit terminal sessions on a per-host basis."
+description: "Record the commands run on a host, review sessions, and keep an audit trail on shared hosts."
 ---
 
-Command logs record keystrokes and commands entered during a session. They are useful for auditing activity on shared hosts or tracking what was run during an incident.
+Command logs record the commands run on a host, by you and by everyone you share it with. Use them to audit shared hosts or to reconstruct what was run during an incident.
 
 <Note>
-  Command logging requires a [Pro subscription](/plans). Free accounts cannot enable logging or view logs.
+  Command logging requires a [Pro subscription](/plans). On Free, the **Command logging** switch and the **Command logs** page show a Pro lock.
 </Note>
 
-<Frame>
-  <img src="/images/activity.png" alt="Activity page listing hosts with command logging enabled" />
-</Frame>
+## Turn on logging for a host
 
-## Enable logging on a host
+Command logging is off by default.
 
-1. Open the host edit form.
-2. Toggle **Command logging** on.
-3. Save.
+1. Open the host's detail page and select the **Logging & activity** tab.
+2. Turn on **Command logging**.
 
-All sessions on that host will be logged from that point forward.
+Logging applies from that moment on, to your sessions and to the sessions of everyone the host is shared with. Only the host's owner can change it. Command logging works only on synced hosts. See [Local hosts and sync](/hosts#local-hosts-and-sync).
+
+The [share dialog](/sharing#share-a-host) also offers **Turn on** when you share a host that isn't logged.
+
+To log every host you create from now on, turn on **Log commands on new hosts** in **Settings → Security**. Existing hosts keep their own setting.
 
 ## What is recorded
 
-Each log entry captures:
+Termique records what was submitted, not every keystroke. Each entry has a time, the person who ran it, and the text.
 
-| Field | Value |
-|-------|-------|
-| Timestamp | When the input was received |
-| Session ID | Which terminal session |
-| Kind | `input` (keystrokes) or `output` (terminal output, if enabled) |
-| Payload | The text content |
-| Pasted | Whether the input was pasted (vs. typed) |
-| Actor | The Termique user who ran the session |
+| Entry | When it's recorded | Flag |
+|-------|-------------------|------|
+| Command | A line typed at the shell prompt and submitted with Enter. Edits and history recall show as the final line only. | None |
+| Pasted command | A pasted block, recorded as one entry. | `pasted` |
+| Full-screen tool | Entering and leaving a full-screen program such as `vim`, `less`, `top`, or `tmux`, and each line typed inside it. | `tui`, `in tui` |
+| Control key | Ctrl+C, Ctrl+D, and Ctrl+Z, recorded as `SIGINT`, `EOF`, and `SIGTSTP`. | None |
+| Run by Termique | Commands the AI assistant, an investigation, an agent, or a setup check runs on the host. | `via app` |
+| File action | Reads, writes, renames, and deletes in the file browser. | `file` |
+| Port forward | A recipient opening a port forward on a shared host. | `tunnel` |
+| Hidden input | A line typed at a password prompt. See below. | None |
+
+Sessions from the [mobile app](/mobile) are logged the same way.
+
+## What is never recorded
+
+- **Output.** Termique never records what the server prints.
+- **Passwords typed at a prompt.** When the server asks for a password, passphrase, PIN, or one-time code, in English or many other languages, the line you type is recorded only as hidden input with a length range (`<8`, `8-16`, or `>16`) and the prompt it answered. If several lines in a row are hidden, the entry is flagged, because a changed shell prompt can hide commands this way.
+- **Secrets in commands.** Before an entry leaves your device, Termique replaces likely secrets with `[REDACTED]`. This covers:
+  - Values of variables and arguments named like secrets, such as `password=`, `DB_PASSWORD=`, `GITHUB_TOKEN=`, or `api_key:`.
+  - Flags such as `--password`, `--token`, and `--api-key`, `curl -u user:pass`, and `mysql -p<password>`.
+  - `Authorization` and `Cookie` headers, and `Bearer` tokens.
+  - Private key blocks, and passwords in URLs such as `postgres://user:pass@db`.
+  - Well-known token formats, such as GitHub, GitLab, Slack, AWS access keys, and JWTs.
+  - Any unbroken run of 200 or more characters, such as a pasted key or blob.
+
+<Warning>
+  Scrubbing catches common patterns, not every secret. Avoid typing secrets directly on the command line of a logged host.
+</Warning>
 
 ## View logs
 
-Open the host detail and click **Command logs**. Logs are listed chronologically. You can filter by session or date range.
+Click **Command logs** in the sidebar. The page lists sessions from every host that records commands, grouped by day, with the host, the last command, who ran it, how many commands, and how long it lasted. Your current session on a connected host shows **Live**.
+
+Filter with the views at the top:
+
+- **All sessions**
+- **Mine**
+- **Teammates**
+- **With sudo**: sessions that ran at least one command with `sudo`.
+- **By host**: one row per recording host, with its entry count.
+
+Use **Search commands** to find sessions by command text or host name.
 
 <Frame>
-  <img src="/images/activity-detail.png" alt="Command log detail showing timestamped commands per actor" />
+  <img src="/images/activity.png" alt="Command logs page in the All sessions view, with sessions grouped by day" />
 </Frame>
+
+Click a session to open it. The session view lists each command in order, with its time, and marks commands run with `sudo`. The side panel shows the host, the person, when the session started, and how long it lasted. Click **Find** to search within the session, or **Export** to save it as a text file.
+
+<Frame>
+  <img src="/images/activity-detail.png" alt="Session view showing timestamped commands, a sudo flag, and the session properties panel" />
+</Frame>
+
+In **By host**, click a host to see its full log: every entry from every person, newest first, with flags for pasted input, full-screen tools, actions run by Termique, file actions, and port forwards.
+
+The host's **Logging & activity** tab also shows its last 10 commands under **Recent activity**.
 
 ## Shared hosts
 
-If you accept a shared host with command logging enabled, the host owner can see your session logs. You are shown a consent prompt at the time you accept the invite. See [Sharing](/sharing).
+On a shared host, the log is one audit trail for the host. The owner and every recipient who accepted the share see all entries, from everyone. Viewing logs requires Pro.
 
-## Log retention
+- Before accepting a share, the recipient confirms **I understand and accept activity logging**. See [Accept or decline a share](/sharing#accept-or-decline-a-share).
+- When a recipient opens a session, Termique reminds them that commands they type are visible to the owner and everyone the host is shared with.
+- When the owner turns logging off, new commands are not recorded for anyone. Existing entries stay readable until they are cleared.
+- Revoking a share does not delete the recipient's entries. They stay in the host's log.
 
-Logs are stored in the API backend. You can delete logs older than a given date from the host's command log settings.
+## Delete entries
+
+Only the host's owner can delete entries, and only the entries they recorded themselves. Entries recorded by recipients stay until they expire.
+
+- **Clear old entries**: on the **Command logs** page, select **By host**, open the host, and click **Clear old entries**. This deletes your entries for that host that are older than 30 days.
+- **Clear log**: with **Command logging** turned off, the host's **Logging & activity** tab shows the number of existing entries. Click **Clear log** and confirm to delete your entries for that host.
+
+## Retention and limits
+
+- Termique deletes log entries automatically after 90 days, on every plan.
+- Each host's log holds up to `10,000` entries. When it is full, Termique shows **Activity log is full (10,000 entries).** and stops adding entries until some are cleared or expire.
+- If you are offline, Termique keeps up to `200` entries per host and uploads them when you reconnect. Entries beyond that are lost, and the host's log shows how many.
 
 ## Privacy
 
-Command logs are stored on the Termique backend. They are not end-to-end encrypted. The server stores them in plaintext. Enable command logging only on hosts where this is acceptable.
+Command logs are stored on the Termique backend. They are not end-to-end encrypted: the server stores them in plaintext, after the scrubbing described above. Turn on logging only on hosts where this is acceptable.

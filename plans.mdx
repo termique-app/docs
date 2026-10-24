@@ -1,37 +1,87 @@
 ---
-title: "Plans & billing"
-description: "What's included on Free vs Pro, and how to upgrade."
+title: "Plans and billing"
+description: "What Free and Pro include, how to upgrade, and how to manage your subscription."
 ---
 
-Termique has a Free plan and a Pro subscription. Free covers solo use on a handful of hosts; Pro removes the caps and unlocks team features.
+Termique has a Free plan and a Pro subscription. Everyone starts on Free. Pro removes the host and snippet caps, raises AI limits, and adds sharing, command logs, and longer metrics history.
 
 ## Free vs Pro
 
 | Feature | Free | Pro |
 |---------|------|-----|
-| Hosts | Up to 3 | Unlimited |
-| Snippets | Up to 10 | Unlimited |
-| Sharing hosts with teammates | Not available | Available |
-| Command logs | Not available | Available |
-| AI assistant (hosted) | 15 prompts/day | 100 prompts/day |
-| AI memory | Not available | Available |
-| Monitoring: background push alerts | Not available | Available |
-| Monitoring history | 5 min: 7 days · 1 hr: 30 days · 1 day: 90 days | 5 min: 30 days · 1 hr: 1 year · 1 day: 3 years |
+| Synced hosts | Up to `3` | Unlimited |
+| Snippets | Up to `10` | Unlimited |
+| SFTP file transfer | Included | Included |
+| Port forwarding | Included | Included |
+| Host monitoring | Included | Included |
+| Hosted AI assistant | `15` prompts per day | `100` prompts per day |
+| Hosted inline AI suggestions | `30` per day | `200` per day |
+| AI memory | Not included | Included |
+| Host sharing and command logs | Not included | Included |
+| Incident investigations | Not included | Included |
+| Background alert notifications | Not included | Included |
+| Metrics history | See [Metrics history](#metrics-history) | See [Metrics history](#metrics-history) |
+
+Hosted AI limits reset at `00:00` UTC.
 
 <Note>
-  A custom (BYO) AI endpoint is not metered by Termique regardless of plan. See [AI assistant](/ai-assistant).
+  A custom AI endpoint is not counted against daily limits on either plan. See [AI assistant](/ai-assistant).
 </Note>
+
+### Share recipients
+
+Pro includes `5` share recipients. A recipient is one person you share with, however many hosts you share with them. Additional recipients cost `$3`/month each and are added in the [web dashboard](https://termique.app/dashboard).
+
+### Metrics history
+
+| Resolution | Free | Pro |
+|------------|------|-----|
+| Raw | 24 hours | 24 hours |
+| 5 minutes | 7 days | 30 days |
+| 1 hour | 30 days | 1 year |
+| 1 day | 90 days | 3 years |
+
+The **1y** range on monitoring charts requires Pro.
 
 ## Upgrade
 
-Open **Settings → Subscription** and click **Upgrade**. Payment is handled by Polar; you'll be redirected to a secure checkout.
+1. Open **Settings → Subscription** and click **Upgrade to Pro**.
+2. Review the Free and Pro comparison and click **Upgrade to Pro**.
+3. Checkout opens in your browser on the web dashboard. Payment is handled by Polar.
+
+You can also upgrade from the last onboarding step, or from any upgrade prompt in the app.
+
+<Frame>
+  <img src="/images/upgrade-modal.png" alt="Upgrade to Pro dialog comparing Free and Pro" />
+</Frame>
 
 ## Manage your subscription
 
-Open **Settings → Subscription** and click **Manage subscription** to open the Polar customer portal. From there you can update payment details, view invoices, or cancel.
+Open **Settings → Subscription** and click **Manage billing**. The billing section of the web dashboard opens in your browser, where you can update payment details, view invoices, or cancel.
 
-If you cancel, Pro features stay active until the end of your current billing period.
+**Subscription** shows your plan status:
+
+| Status | Meaning |
+|--------|---------|
+| **Active** | Pro is active. The renewal date is shown next to it. |
+| **Canceling** | You canceled. Pro stays active until the date shown. |
+| **Payment issue** | A payment failed. Pro features are off until it is resolved. New shares are paused, and existing shares keep working. |
+| **Granted** | Pro was granted to your account, for example as a referral reward. There is nothing to pay or manage. An end date is shown if it has one. |
 
 ## Hitting a limit
 
-If you're on Free and hit a cap (e.g. a 4th host, or an 11th snippet), Termique shows an upgrade prompt instead of completing the action. Nothing is deleted or downgraded automatically. Remove an existing item or upgrade to continue.
+On Free, adding an 11th snippet, or a 4th host when your hosts all sync, opens an upgrade prompt instead of completing the action. Termique does not delete anything. Remove an existing item or upgrade to continue.
+
+### Hosts on this computer
+
+When your Free account supports hosts kept on this computer, the **Hosts** page shows a **Sync** counter such as **Sync 3/3**. You can then add as many hosts as you like:
+
+- `3` hosts sync to your other devices.
+- The rest stay on this computer only. Their address, credential, and port forwards never leave the device.
+- To change which hosts sync, click the **Sync** counter, or right-click a host and choose **Sync to other devices** or **Swap with a local host**.
+
+When you upgrade to Pro, every host on this computer syncs.
+
+## Devices
+
+Your account can be signed in on a limited number of devices. If a new device is over the limit, Termique shows **This device could not be registered**. Click **Manage devices** to remove a device in the web dashboard. Removing a device from the list does not sign it out.

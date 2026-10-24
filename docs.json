@@ -15,7 +15,7 @@
         "pages": [
           "index",
           "quickstart",
-          "dashboard"
+          "layout"
         ]
       },
       {
@@ -23,7 +23,8 @@
         "pages": [
           "hosts",
           "groups",
-          "sftp"
+          "sftp",
+          "port-forwarding"
         ]
       },
       {
@@ -106,5 +107,11 @@
     "socials": {
       "website": "https://termique.app/contact"
     }
-  }
+  },
+  "redirects": [
+    {
+      "source": "/dashboard",
+      "destination": "/layout"
+    }
+  ]
 }

@@ -1,37 +1,101 @@
 ---
 title: "SFTP"
-description: "Transfer files to and from your servers using SFTP."
+description: "Browse, transfer, and edit files on your hosts with the built-in Files view."
 ---
 
-Termique includes an SFTP file manager built into every SSH connection. You can browse the remote filesystem, upload, download, and delete files without a separate tool.
+Every SSH session includes an SFTP file browser called **Files**. It uses the session's connection and credential, so there is nothing else to set up. You can browse the server, transfer files and folders in both directions, preview text files, and edit files in a local app.
 
-## Open SFTP
+## Open Files
 
-With a host connected, click the **SFTP** tab in the session panel. Termique opens an SFTP connection to the same host using the same credential.
+Do one of the following:
+
+- In a session, click **Files** in the **Terminal** / **Files** switch in the session header. Click **Terminal** to go back.
+- On a host's detail page, click **SFTP**. Termique opens a session and shows its files.
+
+While a session shows its files, the sidebar lists it as `<label> · Files`.
+
+Files always shows the focused session. To browse another host, switch to that host's session in the sidebar, or open one.
 
 <Frame>
-  <img src="/images/sftp.png" alt="Files page listing active SFTP sessions" />
+  <img src="/images/sftp.png" alt="Files view browsing a remote home directory, with the breadcrumb, toolbar, and file list" />
 </Frame>
 
 ## Navigate
 
-The file manager shows the remote filesystem starting from your home directory. Click a directory to open it. Use the breadcrumb at the top to go back.
+Files opens at the root folder (`/`) of the server. Your home folder is usually under `/home`.
 
-## Upload files
+- Double-click a folder to open it, or right-click it and select **Open**.
+- Click any part of the breadcrumb to jump to it. Long paths collapse the middle folders.
+- Click **Go up** to open the parent folder.
+- Click **Show hidden files** to show dotfiles.
+- Open **More** (`…`) for **Filter this folder**, **Refresh**, and **Go to home folder**. On the server, **Go to home folder** returns to `/`.
 
-Click **Upload** or drag files from your desktop into the file manager. Files are transferred to the current remote directory.
+The list shows each entry's **Name**, **Size**, **Modified** date, and **Permissions**. Narrow windows hide the **Modified** and **Permissions** columns. The status bar shows the item count and the selection.
 
-## Download files
+To select several entries, `⌘`-click or `Ctrl`-click them, or `Shift`-click to select a range.
 
-Right-click a file and select **Download**. The file is saved to your local downloads directory.
+## Show local files
 
-## Create a directory
+Click **This Mac** (macOS) or **This computer** (Windows and Linux) in the header to show your local files next to the server's. Termique remembers the choice.
 
-Click **New folder**, enter a name, and press Enter.
+- Drag the divider between the panes to resize them.
+- When nothing else has focus, press `Tab` to switch the active pane.
+- Below a window width of `1100px`, the two panes collapse into one, with a toggle to switch between them.
+- On Windows, use **Switch drive** to change drives in the local pane.
 
-## Delete
+<Frame>
+  <img src="/images/sftp-local.png" alt="Files view with This Mac on the left, the server on the right, and the transfer buttons between them" />
+</Frame>
 
-Right-click a file or directory and select **Delete**. Directory deletion is recursive. All contents are removed.
+## Upload
+
+Use any of these:
+
+- Click **Upload files** in the toolbar and pick one or more files. If a file with the same name exists, Termique asks before it overwrites it.
+- Drag files or folders from Finder or File Explorer onto the server pane. The pane shows **Drop to upload**.
+- With local files shown, drag entries from the local pane onto the server pane, or onto a folder in it.
+- Select entries in the local pane and click the arrow between the panes (**Upload selection to** the host).
+
+Folders transfer recursively. Symbolic links inside a folder are skipped.
+
+## Download
+
+Use any of these:
+
+- Right-click a file and select **Download…**, then choose where to save it.
+- With local files shown, drag entries from the server pane onto the local pane, or onto a folder in it.
+- Select entries in the server pane and click the arrow between the panes (**Download selection to This Mac** or **This computer**).
+
+## Resolve conflicts
+
+When a transferred item already exists at the destination, Termique asks what to do.
+
+- For one item, the **File exists** dialog shows both copies with size and date. Click **Overwrite**, **Skip**, or **Rename** (then enter a **New name** and click **Rename and transfer**). Turn on **Apply this choice to remaining conflicts** to reuse your choice.
+- For several items, choose **Overwrite all**, **Skip all**, or **Decide per file**.
+
+## Transfer progress
+
+While a transfer runs, a progress strip at the bottom shows the current file, `3 of 5 files`, bytes transferred, speed, and percentage. Click **Cancel** to stop the batch.
+
+If some files fail, the strip shows `n failed`. Click it to see each failure.
+
+## Preview a file
+
+Double-click a text file, or right-click it and select **Preview**, to read it inside Termique. Files up to `512 KB` can be previewed. Click **Back to folder** to return.
+
+## Edit a file in a local app
+
+Right-click a file and select **Edit externally**. Termique downloads a temporary copy and opens it in your default app for that file type. Files up to `64 MB` can be edited this way.
+
+Termique checks the copy every 2 seconds. When you save it, a notification asks whether to upload the changes. Click **Upload** to write them back to the server.
+
+## Rename, create, and delete
+
+- **Rename**: right-click an entry and select **Rename**, type the new name, and press `Enter`. If the new name already exists, Termique asks before it overwrites it.
+- **New folder**: click **New folder** in the toolbar, type a name, and press `Enter`.
+- **Delete**: right-click an entry and select **Delete**, then confirm. Deleting a folder removes everything in it.
+
+The same actions are in each row's `…` menu.
 
 <Warning>
   SFTP delete is permanent. There is no trash or undo.
@@ -39,4 +103,8 @@ Right-click a file or directory and select **Delete**. Directory deletion is rec
 
 ## Permissions
 
-File permissions and ownership are shown in the file list. You cannot change permissions from the Termique SFTP panel. Use the terminal for `chmod` and `chown`.
+The **Permissions** column shows each remote entry's mode, e.g. `-rw-r--r--`. You cannot change permissions or ownership from Files. Use `chmod` and `chown` in the terminal.
+
+## Files in split panes
+
+In a tab with [split panes](/terminal#split-panes), each pane's **Files** switch shows that session's files inside the pane. These panes browse the server only. They support upload, download, preview, rename, new folder, and delete, but not local files, drag-and-drop between panes, or **Edit externally**. Use the full Files view of a single-pane session for those.

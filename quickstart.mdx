@@ -1,63 +1,73 @@
 ---
 title: "Quickstart"
-description: "Install Termique and connect to your first SSH server in under 5 minutes."
+description: "Install Termique, set your master password, and connect to your first host."
 ---
 
-This guide walks you through installing Termique, setting up your master password, and connecting to your first SSH host.
+This guide covers installing Termique, setting up your master password, and opening your first SSH session.
 
 ## Prerequisites
 
-- macOS 12+, Windows 10+, or a Linux distribution with a desktop environment
-- An SSH server you can connect to (hostname, port, username, and password or key)
+- A computer running macOS, Windows, or Linux
+- An SSH server you can reach: hostname or IP, port, username, and a password or private key
 
-## Install
+## Set up Termique
 
 <Steps>
   <Step title="Download the app">
-    Download the latest release for your platform:
-
-    | Platform | Link |
-    |----------|------|
-    | macOS | [termique.app/download/macos](https://termique.app/download/macos) |
-    | Windows | [termique.app/download/windows](https://termique.app/download/windows) |
-    | Linux | [termique.app/download/linux](https://termique.app/download/linux) |
+    Download the latest release for your platform from [termique.app/download](https://termique.app/download) and install it.
   </Step>
   <Step title="Sign in">
-    Open Termique and click **Sign in with browser**. This opens your default browser to complete sign-in, then returns you to the app.
+    Open Termique and click **Sign in with browser**. Your default browser opens to complete sign-in. When it finishes, return to the app.
+
+    To stop waiting for the browser, click **Cancel**.
 
     <Frame>
-      <img src="/images/login.png" alt="Termique sign-in screen with the Sign in with browser button" />
+      <img src="/images/login.png" alt="Sign-in screen with the Sign in with browser button" />
     </Frame>
   </Step>
   <Step title="Complete onboarding">
-    On first launch, a short setup wizard walks you through:
+    On first sign-in, a 4-step setup runs:
 
-    1. **Welcome**: a quick intro to Termique.
-    2. **Master password**: enter a strong master password. This password encrypts your Data Encryption Key (DEK), which in turn encrypts every credential. There is no password recovery. If you lose it, your credentials cannot be decrypted. Store it in a password manager.
-    3. **Theme**: pick Light, Dark, or System. You can change this later in Settings.
-    4. **Plans**: compare Free and Pro. Everyone starts on Free; upgrade now or later from Settings.
+    1. **Welcome**: click **Get started**.
+    2. **Create master password**: enter a master password of at least `8` characters and confirm it. Check **I understand my master password cannot be recovered if lost.**, then click **Set master password**.
+    3. **Choose your theme**: pick **Light**, **Dark**, or **System**, then click **Continue**.
+    4. **Compare Free and Pro**: click **Continue to app**, or **Upgrade to Pro** to open checkout in your browser.
 
     <Frame>
-      <img src="/images/master-password-setup.png" alt="Create master password screen with password strength meter" />
+      <img src="/images/master-password-setup.png" alt="Create master password step with password strength meter and recovery acknowledgement" />
     </Frame>
+
+    <Warning>
+      There is no master password recovery. If you lose it, your stored credentials cannot be decrypted. Store it in a password manager.
+    </Warning>
+
+    <Note>
+      If you already use Termique on another device, onboarding is skipped. Enter your existing master password on the unlock screen instead.
+    </Note>
   </Step>
   <Step title="Add your first host">
-    You'll land on the **Dashboard**. Click **Add Host**.
+    After onboarding, you land on the **Hosts** page. Click **New host**. You can also click **+** next to **Hosts** in the sidebar, or press `⌘N` on macOS or `Ctrl+Shift+N` on Windows and Linux.
 
-    Fill in:
-    - **Label**: a friendly name (e.g. `web-prod-01`)
-    - **Host**: the hostname or IP address
-    - **Port**: SSH port (default `22`)
+    In the **Add host** panel, fill in:
+
+    - **Label**: a name for the host, such as `web-prod-01`
+    - **Host or IP**: the hostname or IP address. You can also enter `host:port`.
+    - **Port**: the SSH port. Default `22`.
     - **Username**: the SSH user
-    - **Auth type**: `password` or `key`
-    - **Credential**: the password or private key
+    - **Authentication**: **Password**, **Stored SSH key**, or **Private key**
 
-    Click **Save**. The credential is encrypted and stored locally.
+    **Groups**, **Tags**, and **Connect via** (a jump host) are optional.
+
+    Click **Add host**. Termique encrypts the credential and opens the host's page.
   </Step>
   <Step title="Connect">
-    Click the host in the sidebar. Termique opens a terminal session connected to your server.
+    On the host's page, click **Open session**. From the **Hosts** list, hover a row and click **Connect**, or select it and press `Enter`.
 
-    You can open multiple sessions in tabs, resize the terminal, and disconnect from the session menu.
+    The session appears under **Sessions** in the sidebar. Click it to return to the terminal.
+
+    <Frame>
+      <img src="/images/terminal.png" alt="Terminal session with the session listed under Sessions in the sidebar" />
+    </Frame>
   </Step>
 </Steps>
 
@@ -65,12 +75,13 @@ This guide walks you through installing Termique, setting up your master passwor
 
 | If you want to | See |
 |----------------|-----|
-| See an overview of your hosts and activity | [Dashboard](/dashboard) |
+| Find your way around the app | [Layout and navigation](/layout) |
 | Add and organize more hosts | [Hosts](/hosts) |
 | Organize hosts into groups | [Groups](/groups) |
-| Save and share commands | [Snippets](/snippets) |
+| Save and reuse commands | [Snippets](/snippets) |
+| Transfer files | [SFTP](/sftp) |
 | Connect from your phone | [Mobile companion](/mobile) |
 
 <Tip>
-  Need help? Contact support at [support@termique.app](mailto:support@termique.app).
+  Need help? Open the account menu in the top right and click **Report bug** to send a bug report or feature request to the Termique team.
 </Tip>

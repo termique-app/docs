@@ -1,42 +1,83 @@
 ---
 title: "Settings"
-description: "Manage your account, appearance, shortcuts, and updates."
+description: "Manage your account, security, AI provider, appearance, shortcuts, subscription, and updates."
 ---
 
-Settings is organized into tabs: **Security**, **AI Assistant**, **Appearance**, **Shortcuts**, **Updates**, and **Subscription**. Security, AI Assistant, and Subscription have their own pages. See [Security & encryption](/security), [AI assistant](/ai-assistant), and [Plans & billing](/plans). This page covers the rest.
+To open Settings, click your avatar in the top right and choose **Settings**.
+
+Settings has these sections: **Account**, **Security**, **AI assistant**, **Appearance**, **Shortcuts**, **Subscription**, **Updates**, and **About**.
 
 <Frame>
-  <img src="/images/settings.png" alt="Settings page showing tabs for Security, AI Assistant, Appearance, Shortcuts, Updates, and Subscription" />
+  <img src="/images/settings.png" alt="Settings with the section list on the left and the Account section open" />
 </Frame>
 
 ## Account
 
-The **Security** tab also holds your account info and sign-in.
+**Account** shows your name, email, and plan.
 
-- **Sign in**: Termique uses Google, GitHub, or Apple to sign in. There is no separate Termique password for your account, only the master password, which is local to your device and never sent anywhere.
-- **Email / display name**: shown read-only, taken from your sign-in provider.
-- **Sign out**: ends your session on this device. Local data stays until you sign in again or clear it.
+- **Invite friends**: your referral code with a **Copy** button, and how many people you invited and how many activated. Copying gives you a shareable link. You and the person you invite both get a reward once they connect to a host.
+- **Lock**: locks the vault and keeps local data in place.
+- **Sign out**: disconnects live sessions and clears this device's local database: hosts, groups, snippets, and settings. Your account on the server is untouched, so signing back in downloads it all again. If Touch ID is on, signing out also removes it for this account.
 
 <Warning>
-  **Delete Account** permanently removes all hosts, credentials, groups, snippets, share invites, command logs, AI memories, your profile, and your sign-in account. This cannot be undone. Type your email to confirm.
+  **Delete account** permanently deletes your hosts and credentials, groups, snippets, command audit logs, sent and received share invites, AI memories and settings, your profile, and your sign-in account. This cannot be undone. Click **Delete…**, type your email to confirm, then click **Delete account**.
 </Warning>
+
+## Security
+
+| Setting | What it does |
+|---------|--------------|
+| **Touch ID** | Unlock with your fingerprint instead of the master password. You confirm your master password to turn it on. macOS only. |
+| **Require password on startup** | On by default. Turn it off only on a personal device you trust. Termique then unlocks from your OS keychain at launch. |
+| **Auto-lock after** | Locks the app after this much inactivity: `5 minutes`, `15 minutes`, `30 minutes`, `1 hour`, or `2 hours`. Default `30 minutes`. |
+| **Log commands on new hosts** | Turns on command logging for hosts you create from now on. Existing hosts keep their own setting. |
+| **Lock after 5 wrong passwords** | Always on. After 5 wrong master passwords, the app locks for 5 minutes. |
+
+To change your master password, fill in **Current password**, **New password**, and **Confirm new password** under **Master password**, then click **Change password**. The new password must be at least `8` characters.
+
+See [Security and encryption](/security) for how the master password protects your credentials.
+
+## AI assistant
+
+Choose the provider for the AI assistant:
+
+- **Hosted**: runs on the Termique API. `15` prompts a day on Free, `100` on Pro.
+- **Custom endpoint**: any OpenAI-compatible API. Enter the **API base URL**, **Model**, and **API key**. The key is stored in your OS keychain. Turn on **Send terminal output to this endpoint** to allow terminal output you attach to a message to be sent there.
+
+Click **Save** to apply. See [AI assistant](/ai-assistant).
 
 ## Appearance
 
-Open **Settings → Appearance** to switch between **Light**, **Dark**, and **System** theme. System follows your OS setting automatically.
+Pick **Light**, **Dark**, or **Match system**. **Match system** follows your OS setting and is the default. You can also switch between light and dark from the account menu.
+
+Under **Terminal**, **Copy on select** copies text when you select it with the mouse. Right-click pastes. This setting applies to this computer only.
 
 ## Shortcuts
 
-Open **Settings → Shortcuts** to view and customize keyboard shortcuts. Click a shortcut to record a new key combination.
+**Shortcuts** lists keyboard shortcuts in groups: **Global**, **Sessions**, **Switch to tab**, **Panes**, and **Terminal**.
 
-If a combination is already assigned to another action, Termique flags the conflict and lets you reassign it.
+Click a shortcut to record a new combination. Press `Esc` to cancel recording. If the combination is already used by another action, Termique shows **Shortcut conflict**. Click **Override** to move it, or **Cancel**.
+
+Click **Reset to defaults** to restore every shortcut.
+
+## Subscription
+
+**Subscription** shows your plan and its status, plus usage tiles for **Share recipients** and **AI prompts today**. See [Plans and billing](/plans) to upgrade or manage billing.
 
 ## Updates
 
-Open **Settings → Updates** to check your current version and check for a new one.
+**Updates** shows your installed version and checks for a new one when you open it.
 
-1. Click **Check for Updates**.
-2. If one is available, click **Download Update**.
-3. Once downloaded, click **Restart & Install** to apply it.
+1. Click **Check for updates**, or **Check again** after a previous check.
+2. If an update is available, review the release notes and click **Download update**.
+3. When the download finishes, click **Restart & install**.
 
-Updates are not installed automatically. You control when to download and restart.
+Termique also checks for updates shortly after launch. If one is available, a notification offers **Install & restart**.
+
+<Note>
+  On macOS, installing an update asks for your system password. Enter it and keep Termique open until the update finishes.
+</Note>
+
+## About
+
+**About** shows your version and links to the **Website**, **Changelog**, and **Report an issue**.

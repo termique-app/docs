@@ -1,41 +1,72 @@
 ---
 title: "Groups"
-description: "Organize hosts into named, color-coded groups."
+description: "Organize hosts into named, color-coded groups and connect to all of them at once."
 ---
 
-Groups are named collections of hosts. Use them to separate environments (e.g. `production`, `staging`) or projects.
+Groups are named collections of hosts. Use them to separate environments (e.g. `production`, `staging`), projects, or regions. A host can belong to more than one group.
+
+Groups appear as folders in the sidebar under **Hosts**, sorted by name. A host in several groups is listed under each one. Hosts in no group are listed after the folders.
 
 <Frame>
-  <img src="/images/groups.png" alt="Groups list showing named, color-coded host collections" />
+  <img src="/images/groups.png" alt="Groups list showing each group's color, member preview, host count, and online count" />
 </Frame>
+
+## Open the groups list
+
+Click a folder in the sidebar to open that group, then click **Groups** in the page header to see every group. You can also open the command palette (`⌘K` or `Ctrl+K`) and choose **Groups**.
+
+Each row shows the group's color, the first hosts in it, the host count, and how many hosts are online. A host counts as online when it has a connected session or a reporting monitoring agent. Use **Filter groups** to search by name.
 
 ## Create a group
 
-1. Click the **+** button next to the group list in the sidebar.
-2. Enter a **name** and pick a **color**.
-3. Click **Save**.
+<Steps>
+  <Step title="Open New group">
+    Click the **New folder** button next to **Hosts** in the sidebar, or click **New group** on the groups list.
+  </Step>
+  <Step title="Name it">
+    Enter a **Name** and pick a **Color**: Blue, Green, Yellow, Purple, Orange, or Pink.
+  </Step>
+  <Step title="Save">
+    Click **Create group**. A new group starts empty.
+  </Step>
+</Steps>
 
 ## Add hosts to a group
 
-Open the group and click **Add hosts**, then select from your host list. A host can belong to more than one group.
+Open the group and click **Add hosts**. Select hosts from the list (search by label, host, or username) and click **Add 2 hosts** (the count matches your selection). Hosts already in the group are not listed. If every host is already in the group, the dialog offers **New host**.
 
-Alternatively, open a host's edit form and assign it to a group from there.
+You can also assign groups from a host's **Add host** or **Edit host** sheet. Use the **Groups** field to add the host to one or more groups.
 
 <Frame>
-  <img src="/images/group-detail.png" alt="Group detail page listing the hosts in that group" />
+  <img src="/images/group-detail.png" alt="Group detail page listing the group's hosts with live status, CPU, and memory" />
 </Frame>
+
+## Group detail
+
+The group page lists its hosts with the same status, address, CPU, memory, and last-connected columns as the hosts list. Click a host to open its detail page, or hover a row and click **Connect**.
+
+The side panel shows:
+
+- **Colour**: click a swatch to change the group's color.
+- **Summary**: **Hosts**, **Online**, **With agent**, and **Last seen**.
+- **Rename** and **Delete group, keep hosts**.
+
+## Connect to every host in a group
+
+Click **Open all** in the group header to open one terminal session per host. If the group has more than 3 hosts, Termique asks you to confirm first. For a group with one host the button reads **Connect**.
 
 ## Remove a host from a group
 
-Open the group, right-click the host entry, and select **Remove from group**. This does not delete the host. It only removes the association.
+On the group page, right-click the host and select **Remove from group**, then confirm. The host is not deleted.
 
-## Edit or delete a group
+The same context menu has **Connect**, **Details**, and **Edit host**. **Edit host** is not shown for hosts shared with you.
 
-Right-click a group in the sidebar:
+## Rename or delete a group
 
-- **Edit**: rename or change the color.
-- **Delete**: removes the group. Hosts inside are not deleted.
+On the group page, click **Rename** to change its name, color, and members in the **Edit group** dialog. On the groups list, hover a row and click the pencil icon to do the same.
+
+To delete a group, click **Delete group, keep hosts** on the group page, or the trash icon on the groups list. The hosts in it are not deleted.
 
 ## Sync
 
-Groups are synced to your API backend along with their host membership lists. If you add or remove a host from a group on one device, the change propagates to other devices on next sync.
+Groups and their host lists sync through the API to your other devices. When you add or remove a host on one device, the change appears on your other devices on the next sync.

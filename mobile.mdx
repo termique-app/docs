@@ -1,28 +1,9 @@
 ---
 title: "Mobile companion"
-description: "Access your hosts and snippets from iOS and Android."
+description: "Connect to your hosts, run snippets, follow monitoring, and get alerts from iOS and Android."
 ---
 
-The Termique mobile app is a companion to the desktop. It uses the same API backend and the same encryption: your hosts, groups, snippets, and SSH sessions are available on your phone once you sign in and unlock.
-
-## Platforms
-
-| Platform | Status |
-|----------|--------|
-| iOS | Available on the App Store |
-| Android | Available on Google Play |
-
-## What's available on mobile
-
-- Add, edit, and connect to hosts
-- Full SSH terminal sessions
-- SFTP file browsing and transfer
-- Groups and snippets (create, edit, run)
-- Generate or import SSH keys
-- AI assistant
-- Command log viewing
-- Monitoring alert rules, with push notifications for hosts with the monitoring agent installed
-- Accept and manage share invites
+The Termique mobile app is a companion to the desktop app. It uses the same account, API backend, and encryption. Sign in, unlock with your master password, and your synced hosts, groups, snippets, and SSH keys are on your phone.
 
 ## Install
 
@@ -31,14 +12,85 @@ The Termique mobile app is a companion to the desktop. It uses the same API back
 | iOS | [App Store](https://apps.apple.com/us/app/termique/id6773997253) |
 | Android | [Google Play](https://play.google.com/store/apps/details?id=app.termique.mobile) |
 
-## Sync
+## Sign in and unlock
 
-Mobile uses the same API backend as the desktop. Sign in with the same account, enter your master password to unlock, and your data is available immediately.
+Sign in with the same account you use on the desktop, then enter your master password. Credentials encrypted on the desktop decrypt on mobile and the reverse, because both use the same master password and DEK. Only synced hosts appear on mobile. A host kept only on your computer stays there.
 
-The master password and DEK derivation are interoperable between desktop and mobile: credentials encrypted on desktop can be decrypted on mobile and vice versa.
+After 5 wrong master password attempts, unlocking is blocked for 5 minutes.
+
+## What you can do on mobile
+
+The app has four tabs: **Hosts**, **Snippets**, **Keys**, and **Settings**.
+
+### Hosts
+
+- Add, edit, and delete hosts, including a jump host.
+- Connect in a full SSH terminal. Open several sessions and switch between them.
+- In a session, use **Run snippet…**, **Find in scrollback**, and **Files (SFTP)**. Pasting more than one line asks first.
+- Browse files over SFTP: download, upload, create folders, rename, and delete.
+- Open **Groups** from the Hosts menu to create, edit, and view groups. A group's page lists its hosts. Add hosts with **Add hosts**, or remove one. Removing a host from a group does not delete the host.
+- On a host's page, set a **Startup snippet**: a snippet typed into the terminal as soon as a session connects. This setting is stored on the phone and is not synced.
+
+### Snippets and SSH keys
+
+- Create, edit, and run snippets, and browse the snippet **Marketplace**.
+- Generate a new SSH key (Ed25519, ECDSA, or RSA) or import an existing one (OpenSSH, PKCS#1 RSA, or EC).
+
+### AI assistant
+
+Open **AI assistant** from a host's page or from a terminal session. The assistant proposes commands and asks **Run this command?** before each one. It uses the hosted provider and shares the daily prompt limit with the desktop. See [AI assistant](/ai-assistant).
+
+In **Settings** > **AI assistant**:
+
+- **Auto-run safe commands**: read-only, low-risk commands run without asking. Others still ask. Off by default, and set per device.
+- **Memory**: see, add, and delete what the assistant remembers. Requires Pro.
+
+### Monitoring and alerts
+
+You install the monitoring agent from the desktop app. On mobile you can:
+
+- Open **Monitoring** from the Hosts menu, or from **Settings** > **Activity** > **Monitoring**, to see every monitored host.
+- Open a host's metrics: live CPU, memory, and disk, and charts for `1h` to `1y`. Ranges beyond what your plan keeps show an upgrade notice.
+- Open **Manage alerts** on a host you own to add, edit, enable, or delete [alert rules](/monitoring#alert-rules).
+
+See [Monitoring](/monitoring).
+
+### Activity and investigations
+
+- **Command logs**: a host's logged sessions, from its page. Requires Pro.
+- **Settings** > **Activity** > **Command logs**: sessions across all your hosts, filtered by **All**, **Mine**, **Teammates**, or **Sudo**. Requires Pro. See [Command logs](/command-logs).
+- **Settings** > **Activity** > **Investigations**: reports from [incident investigations](/incident-investigation) you ran on the desktop. You can read them on mobile but not start one.
+
+### Sharing
+
+Open **Settings** > **Sharing & team** to accept and manage share invites, under **Received**, **Sent**, and **Team**. Sharing a host from mobile requires Pro. See [Sharing](/sharing).
+
+## Security settings
+
+In **Settings** > **Security**:
+
+- **Biometric unlock**: unlock with Face ID, Touch ID, or your device's biometrics instead of typing the master password.
+- **Auto-lock**: how long the app can stay in the background before it locks. Choose **Immediately**, or after 1, 2, 5, or 15 minutes, or 1 hour. The default is 2 minutes.
+- **Log commands on new hosts**: the default command logging setting for hosts you add. Existing hosts keep their own setting. Requires Pro.
+- **Master password**: change it. Enter **Current password**, **New password** (8 or more characters), and **Confirm new password**, then tap **Change password**. Your other devices unlock with the new password too. Termique cannot recover it if you forget it.
+
+## Devices
+
+**Settings** > **Devices** lists the computers and phones signed in to your account, most recent first.
+
+- Removing a device only takes it off the list. It comes back the next time it opens Termique.
+- If you lose a device, tap **Sign out everywhere**. Every device and browser signed in to your account is signed out, this phone too, and you sign in again.
 
 ## Push notifications
 
-The mobile app supports push notifications for monitoring alerts: when a host with the monitoring agent installed crosses an alert rule's threshold (CPU, RAM, or disk), you get a push notification. Tapping it opens the alert rules screen for that host.
+On [Pro](/plans), monitoring alerts arrive as push notifications, even when the desktop app is closed. A notification names the host and the metric, for example `CPU threshold exceeded`. Tap it to open that host's alert rules.
 
-Notification delivery requires the mobile app to be installed and notifications to be enabled in iOS/Android system settings.
+Notifications need to be allowed for Termique in your phone's system settings.
+
+## Sync
+
+Mobile uses the same API backend as the desktop. Changes to hosts, groups, snippets, and SSH keys on one device appear on the other. Settings on the phone, such as **Auto-lock**, **Auto-run safe commands**, and startup snippets, apply only to that phone.
+
+<Note>
+  An **Agents** tab for following coding agent sessions from your phone is in beta and not released yet. See [Agents](/agents).
+</Note>

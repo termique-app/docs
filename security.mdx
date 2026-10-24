@@ -1,84 +1,193 @@
 ---
 title: "Security & encryption"
-description: "How Termique protects your credentials and what the master password does."
+description: "How Termique encrypts your credentials, unlocks your vault, limits password guesses, and checks the hosts you connect to."
 ---
 
-Termique uses end-to-end encryption. Your credentials are encrypted on your device before they are stored locally or synced. The Termique servers never see plaintext passwords or private keys, and cannot derive your encryption key from anything they store.
+Termique uses end-to-end encryption. Your credentials are encrypted on your device before they are stored locally or synced. Termique's servers store only encrypted copies. They never see your passwords or private keys and cannot derive your encryption key from anything they store.
 
 <Note>
-  This applies to every host you haven't shared. See [Shared credentials](#shared-credentials) below for how sharing changes this.
+  This applies to every host you haven't shared. See [Shared hosts](#shared-hosts) for how sharing changes this.
 </Note>
 
 ## Master password
 
-On first launch, you set a master password. This password:
+When you set up Termique, you create a master password. This password:
 
-- Is used to derive an encryption key (with a random per-user salt).
-- Never leaves your device.
-- Is never sent to any server.
-- Cannot be recovered if lost. There is no reset mechanism.
+- Must be at least 8 characters.
+- Never leaves your device and is never sent to any server.
+- Cannot be recovered. There is no reset. During setup you confirm **I understand my master password cannot be recovered if lost.**
 
-Store it in a password manager. You can change it later from **Settings → Security**.
-
-<Frame>
-  <img src="/images/settings.png" alt="Settings Security tab showing account, master password, and Touch ID" />
-</Frame>
+Store it in a password manager. You can [change it](#change-your-master-password) later.
 
 ## Data Encryption Key (DEK)
 
-At setup, Termique generates a random DEK. The DEK is:
+At setup, Termique generates a random DEK. The DEK:
 
-- Wrapped (encrypted) using the key derived from your master password.
-- Stored locally and, if sync is enabled, in the API backend as an encrypted blob.
-- Used to encrypt every credential (SSH passwords and private keys) before storage.
+- Encrypts every credential (SSH passwords and private keys) before it is stored or synced.
+- Is wrapped (encrypted) with a key derived from your master password.
+- Is stored only in wrapped form, on your device and in the API backend.
 
-When you unlock the app with your master password, the DEK is unwrapped and held in memory. It is never accessible outside the app's secure layer.
+When you unlock Termique, the DEK is unwrapped and held in memory by the app's secure layer. It is never exposed to the app's interface. Locking the app clears it from memory.
 
-## Credential encryption
+## Unlock
 
-Every credential stored by Termique is encrypted using the DEK. Encryption is performed before the credential reaches any storage layer, local or remote. The app does not retain plaintext credentials after the encryption step.
+When Termique starts, or after it locks, the unlock screen asks for your master password. Enter it and click **Unlock**.
 
-## Unlock flow
-
-1. You enter your master password in the unlock screen.
-2. Termique derives the encryption key using your stored salt.
-3. The wrapped DEK is fetched from local storage (or the backend on a fresh install) and unwrapped.
-4. A verification blob is checked to confirm the master password is correct before proceeding.
-
-If the master password is wrong, the DEK cannot be unwrapped and no credentials are accessible.
+Termique derives your key, unwraps the DEK, and checks it against a verification value before it loads any credential. If the password is wrong, nothing is decrypted and the screen shows **Incorrect master password. Try again.** The screen also warns you when **Caps Lock is on**.
 
 <Frame>
-  <img src="/images/unlock.png" alt="Unlock screen prompting for the master password" />
+  <img src="/images/unlock.png" alt="Unlock screen with the master password field and Unlock button" />
 </Frame>
 
 ## Failed attempts
 
-After 5 failed unlock attempts, Termique locks the unlock screen for 5 minutes. This applies regardless of which device or password you're trying. It protects against brute-force guessing of your master password.
+Termique allows 5 wrong master passwords. The 5th wrong entry locks Termique for 5 minutes. From the 3rd wrong entry, the unlock screen warns you how many attempts you have used.
+
+While locked, the screen shows **Too many failed attempts** and a countdown. When it reaches `0:00`, click **Try again**.
 
 <Frame>
-  <img src="/images/lockout.png" alt="Lockout screen showing a countdown after too many failed attempts" />
+  <img src="/images/lockout.png" alt="Too many failed attempts screen with a countdown until you can try again" />
 </Frame>
+
+The limit protects against guessing your master password:
+
+- Every master password check counts: unlocking, turning on Touch ID, changing your master password, and confirming a changed host key or address.
+- A correct password resets the count.
+- The count is kept on this computer. Restarting Termique or signing out does not reset it.
+- You cannot turn it off. **Settings → Security** shows **Lock after 5 wrong passwords** as **Always on**.
+
+The mobile app applies the same limit.
+
+## Touch ID
+
+On a Mac with Touch ID, you can unlock with your fingerprint instead of typing your master password.
+
+1. Open **Settings → Security**.
+2. Turn on **Touch ID**.
+3. Enter your master password and click **Enable Touch ID**.
+
+The unlock screen then shows **Use Touch ID** and asks for your fingerprint when it opens. Click **Use password** to type your master password instead.
+
+- Adding a new fingerprint in macOS System Settings turns Touch ID off for Termique, so a newly enrolled finger cannot unlock your vault. Turn it on again in **Settings → Security**.
+- If Touch ID fails or its data is outdated, the unlock screen falls back to your master password and tells you why.
+- If you changed your master password on another device, Termique shows **Touch ID on this device is out of sync** after unlocking. Unlock with your master password, then turn Touch ID off and on again.
+- Signing out removes Touch ID for that account.
+
+<Frame>
+  <img src="/images/settings-security.png" alt="Settings Security section with Touch ID, Require password on startup, Auto-lock after, Log commands on new hosts, and Master password" />
+</Frame>
+
+## Skip the password on startup
+
+On a personal computer, you can let Termique unlock itself when it starts.
+
+1. Open **Settings → Security**.
+2. Turn off **Require password on startup**.
+3. Confirm **Skip password on startup?** by clicking **Skip password**.
+
+Termique then stores its keys in your operating system's credential store: Keychain on macOS, Credential Manager on Windows, or the Secret Service (for example GNOME Keyring or KWallet) on Linux. Your master password itself is not stored. The setting only appears when a credential store is available.
+
+<Warning>
+  Anyone who can use your computer account can open and unlock Termique without your master password. Turn this off only on devices you trust.
+</Warning>
+
+This applies only when Termique starts. After an auto-lock or **Lock screen**, you still unlock with your master password or Touch ID. Turn **Require password on startup** back on to remove the keys from the credential store.
+
+## Locking
+
+Termique locks itself after a period of inactivity. Choose the period in **Settings → Security → Auto-lock after**: `5 minutes`, `15 minutes`, `30 minutes` (default), `1 hour`, or `2 hours`. Termique also locks when its window has been hidden or minimized, or the computer has slept, for that long.
+
+To lock right away, open the account menu in the top bar and click **Lock screen**, or click **Lock** in **Settings → Account**.
+
+Locking:
+
+- Clears the DEK from memory. No credential can be used until you unlock again.
+- Disconnects every SSH session and stops active port forwards. Your tabs stay open so you can reconnect after unlocking.
+- Leaves local shell sessions running, because they hold no credentials.
+
+Locking is not signing out. Signing out disconnects live sessions and clears this device's local database. See [Settings](/settings).
+
+## Change your master password
+
+1. Open **Settings → Security**.
+2. Under **Master password**, enter your **Current password**.
+3. Enter a **New password** of at least 8 characters, and repeat it in **Confirm new password**.
+4. Click **Change password**.
+
+Termique re-wraps your DEK with the new password. Your credentials don't need to be re-encrypted. On your other devices, use the new password the next time you unlock with a password.
+
+If Touch ID or **Require password on startup** is set up on this computer, Termique updates it with the new password. If that update fails, Termique turns the feature off and tells you, so you can turn it on again.
+
+A wrong current password counts toward the [failed attempt](#failed-attempts) limit.
+
+## Host key verification
+
+The first time you connect to a host, Termique saves the key the server presents. On every later connection, the server must present the same key. Saved host keys are stored on this computer.
+
+If a host presents a different key, Termique blocks the connection before it sends any credential. The terminal shows **Host key changed - connection blocked**, with the new key's type and its fingerprint. The fingerprint uses the same `SHA256:` format as OpenSSH.
+
+A changed key is expected when a server is rebuilt or its keys are rotated. It is also what an intercepted connection looks like. To trust the new key:
+
+1. On the server, through a channel you already trust, run:
+   ```bash
+   ssh-keygen -lf /etc/ssh/ssh_host_*_key.pub
+   ```
+2. Compare the output with the fingerprint Termique shows.
+3. If it matches, click **Trust new key…**.
+4. Check **I compared this fingerprint with the server and it matches.**
+5. Enter your master password and click **Trust key and reconnect**.
+
+If the fingerprints don't match, click **Close session** and do not connect.
+
+<Frame>
+  <img src="/images/host-key-changed.png" alt="Terminal tab showing Host key changed - connection blocked, with the new key's SHA256 fingerprint and the Trust new key button" />
+</Frame>
+
+When the change is found outside a terminal tab, for example by an agent on a host, Termique shows the same check in a dialog. Click **Trust and retry**, or **Keep it blocked**.
+
+Termique supports plain host keys only. It refuses a host that presents an SSH host certificate.
+
+### Address changes
+
+Termique also remembers the address each host's credential was first sent to. If the address changes, for example because the host was edited on another device, Termique blocks the connection without sending the credential and shows **Host address changed**.
+
+- If you changed the address, click **I changed it - confirm…**, enter your master password, and click **Confirm and reconnect**.
+- If you didn't, leave it blocked. Someone may have edited the host's synced details to collect its password.
+
+## Devices and signing out everywhere
+
+Termique keeps a list of the computers and phones signed in to your account. You can see it in the [web dashboard](https://termique.app/dashboard), or in the mobile app under **Settings → Devices**.
+
+- Removing a device only takes it off the list. It does not sign the device out, and it reappears the next time it opens Termique.
+- To cut off a lost or stolen device, use **Sign out everywhere** in the dashboard or the mobile app. Every device and browser signed in to your account is signed out, including the one you're using.
+- A desktop app that is signed out this way shows **Signed out - this session was revoked from another device.** and clears its local database.
+
+Your account has a device limit. Devices you haven't used in 30 days don't count toward it. If a new computer can't be added, Termique shows **This device could not be registered**. Click **Manage devices** to remove a device from the list in the dashboard, then open Termique again.
 
 ## What Termique stores server-side
 
 | Data | Stored as |
 |------|-----------|
-| Hosts, groups, snippets | Plaintext (non-sensitive metadata) |
+| Synced hosts, groups, snippets | Plaintext metadata: labels, addresses, ports, usernames, tags |
+| Hosts kept only on this computer | Not stored. See [Local hosts and sync](/hosts#local-hosts-and-sync) |
 | SSH passwords | Encrypted ciphertext |
 | SSH private keys | Encrypted ciphertext |
-| Wrapped DEK | Encrypted ciphertext (wrapped with your master password key) |
-| Salt + verification blob | Stored to enable unlock on new devices |
+| Wrapped DEK | Encrypted with a key derived from your master password |
+| Salt and verification value | Stored so you can unlock on a new device |
+| Command logs | Plaintext, after secrets are removed. See [Command logs](/command-logs) |
 
-Termique's servers cannot decrypt credentials. They store and return ciphertext.
+Termique's servers cannot decrypt your credentials. They store and return ciphertext.
 
-## Shared credentials
+## Shared hosts
 
-[Sharing a host](/sharing) works differently, because it requires relaying a key between two devices that have no other channel between them.
+[Sharing a host](/sharing) means handing a credential to another person, so it works differently from an unshared host.
 
-As of the current desktop release, that key is wrapped with the recipient's own key before it reaches Termique's servers, the same standard as an unshared host: Termique has no technical ability to read what's been shared, once both the sharer and the recipient are on an updated build.
+When you share a host, Termique encrypts its credential with a new key for that share. That key is then sealed to the recipient's own sharing key, which their app creates the first time they unlock a current version of Termique. Termique's servers store the sealed key and cannot read it. Only the recipient's app can open it, and it stores the credential in the recipient's vault, encrypted with their DEK.
 
-If either person is on a build from before this change, or on a platform that hasn't received it yet, the share falls back to an older method where the server holds a secret capable of unwrapping that key. This is being phased out; check the [changelog](https://termique.app/changelog) for the version that applies to your platform.
+If the recipient has never unlocked a current version of Termique, they have no sharing key yet. The share then falls back to an older method, where Termique's servers hold the share key in a form they can decrypt. To move such a share to the stronger method, ask the recipient to unlock Termique, then [revoke the share](/sharing#revoke-access) and share the host again.
 
-## Locking the app
+Once a share is revoked, or suspended for an unpaid subscription, the servers stop returning its credential.
 
-Locking the app clears the DEK from memory. Credentials cannot be accessed until you unlock again with your master password.
+## Mobile
+
+The mobile app uses the same master password and DEK, so the same vault opens on both. It has the same 5-attempt lockout, **Biometric unlock** with Face ID or Touch ID, an **Auto-lock** setting, and the same host key check. See [Mobile](/mobile).

@@ -1,44 +1,117 @@
 ---
 title: "SSH keys"
-description: "Generate and manage SSH key pairs for passwordless authentication."
+description: "Generate, import, and install SSH key pairs for key-based authentication."
 ---
 
-Termique stores SSH key pairs locally (encrypted) and lets you use them when authenticating to hosts.
+Termique stores SSH key pairs encrypted with your DEK and lets any host use them to authenticate. Open **SSH keys** under **Tools** in the sidebar.
 
 <Frame>
-  <img src="/images/ssh-keys.png" alt="SSH Keys page listing key pairs with algorithm and fingerprint" />
+  <img src="/images/ssh-keys.png" alt="SSH keys list with fingerprints and algorithms, and the selected key's public key and hosts in the side panel" />
 </Frame>
 
-## Generate a new key
+## Generate a key
 
-1. Open **Settings → SSH keys** and click **Generate key**.
-2. Choose an algorithm: `ed25519` (recommended) or `rsa`.
-3. Enter a **name** to identify the key.
-4. Click **Generate**. The private key is encrypted with your DEK and stored. The public key is shown so you can copy it to your server's `~/.ssh/authorized_keys`.
+<Steps>
+  <Step title="Open Generate SSH key">
+    Click **Generate key** in the SSH keys header.
+  </Step>
+  <Step title="Name the key">
+    Enter a **Key name** of at least 3 characters, e.g. `Work Laptop`.
+  </Step>
+  <Step title="Choose an algorithm">
+    | Algorithm | Notes |
+    |-----------|-------|
+    | **ED25519** | Recommended |
+    | **ECDSA** | P-256 curve, generates instantly |
+    | **RSA 3072** | Widely compatible |
+    | **RSA 4096** | Takes 5 to 30 seconds to generate |
+  </Step>
+  <Step title="Generate">
+    Click **Generate key**. The private key is encrypted with your DEK before it is stored or synced. Termique shows the **Fingerprint** and **Public key**.
+  </Step>
+  <Step title="Add the public key to your server">
+    Click **Copy public key** and append it to `~/.ssh/authorized_keys` on the server, or use [Install on host](#install-a-key-on-a-host). Click **Done**.
+  </Step>
+</Steps>
 
-## Import an existing key
+<Frame>
+  <img src="/images/generate-key.png" alt="Generate SSH key sheet with ED25519 selected" />
+</Frame>
 
-1. Open **Settings → SSH keys** and click **Import key**.
-2. Paste or drag in your private key (PEM or OpenSSH format).
-3. Enter a **name**.
-4. Click **Import**. The private key is encrypted before storage.
+## Import a key
 
-<Warning>
-  Termique does not support passphrase-protected private keys at import time. Remove the passphrase with `ssh-keygen -p -f <key>` before importing.
-</Warning>
+<Steps>
+  <Step title="Open Import SSH key">
+    Click **Import** in the SSH keys header.
+  </Step>
+  <Step title="Add the private key">
+    Enter a **Key name**, then paste the key into **Private key** or click **Load from file**. A key whose line breaks were lost in copying is reformatted automatically.
+  </Step>
+  <Step title="Enter the passphrase, if any">
+    If the key is passphrase-protected, a **Passphrase** field appears. Termique checks the key, and the passphrase, as you type.
+  </Step>
+  <Step title="Import">
+    When the sheet shows **Valid … private key**, click **Import key**.
+  </Step>
+</Steps>
 
-## Use a key for authentication
+The passphrase is encrypted together with the private key, so Termique does not ask for it again when you connect.
 
-When adding or editing a host, set **Auth type** to `key` and select the key from the dropdown.
+<Note>
+  Termique can only show the public key for keys in OpenSSH format. If **Public key not available** appears after an import, convert the key with `ssh-keygen -p -f <keyfile>` and import it again.
+</Note>
 
-## View the fingerprint
+You can also paste a private key directly into a host's **Add host** or **Edit host** sheet under **Private key**. Termique imports it here as `<label> key` when you save the host. See [Authentication](/hosts#authentication).
 
-Open **Settings → SSH keys**. Each key row shows its SHA-256 fingerprint. Use this to verify the key on the server side with `ssh-keygen -lf ~/.ssh/authorized_keys`.
+## Use a key for a host
+
+When you add or edit a host, set **Authentication** to **Stored SSH key** and pick the key. See [Hosts](/hosts#authentication).
+
+If a key is passphrase-protected and Termique has no saved passphrase for it, connecting asks for it in **Enter passphrase**. Turn on **Remember this passphrase** to store it, encrypted with the key, and skip the prompt next time.
+
+## Install a key on a host
+
+Termique can append a public key to a server's `~/.ssh/authorized_keys` over an open session.
+
+<Steps>
+  <Step title="Connect to the host">
+    Open a session to the server, using its current password or another key.
+  </Step>
+  <Step title="Open the key's details">
+    In SSH keys, select the key and click **View details**, or double-click it.
+  </Step>
+  <Step title="Install it">
+    Under **Install on host**, pick the connected session and click **Install**.
+  </Step>
+</Steps>
+
+Termique creates `~/.ssh` and `~/.ssh/authorized_keys` with the right permissions if they are missing, and adds the key only if it is not already there. Then edit the host and switch **Authentication** to **Stored SSH key**.
+
+## Key details
+
+Select a key in the list to see it in the side panel:
+
+- The public key, with **Copy public key** and **Copy fingerprint**
+- **Fingerprint** and **Last used**
+- **Used by**: the hosts that authenticate with this key. Click a host to open it.
+- **Rename**, **View details**, and **Delete key**
+
+The list shows each key's name, fingerprint, algorithm, and how many hosts use it. If any of your hosts still sign in with a password, a notice offers **Switch to a key**.
+
+**View details** opens a sheet that also shows whether the key has a passphrase. Click **Reveal private key** to show the private key, and **Copy private key** to copy it. Termique clears the private key from the clipboard after 1 minute.
+
+## Verify a fingerprint
+
+Fingerprints use the OpenSSH `SHA256:` format. To compare with a key on a server, run:
+
+```bash
+ssh-keygen -lf ~/.ssh/authorized_keys
+```
 
 ## Delete a key
 
-Open **Settings → SSH keys**, select the key, and click **Delete**. Hosts that reference the deleted key will fail to connect until you update their auth settings.
+Select the key and click **Delete key**, then confirm. Hosts that use the deleted key can no longer authenticate until you pick another credential for them.
 
 ## Sync
 
-SSH keys (encrypted private keys + public keys + metadata) are synced to your API backend. The private key blob is always encrypted. The server stores the ciphertext only.
+SSH keys sync through the API to your other devices: the encrypted private key, the public key, and metadata. The private key is always encrypted on your device first. The server stores only the ciphertext.

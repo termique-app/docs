@@ -1,51 +1,103 @@
 ---
 title: "Sharing"
-description: "Share a host with someone on your team."
+description: "Share a host with someone on your team, accept hosts shared with you, and manage or revoke access."
 ---
 
-You can share individual hosts with people on your [team](/teams). The recipient gets access to connect to the host using their own master password. Your credential is re-encrypted for them at the point of acceptance.
+You can share a host with people on your [team](/teams). The recipient can connect to the host from their own Termique, with their own master password. The credential is encrypted for each person. See [Shared hosts](/security#shared-hosts) for how.
 
 <Note>
-  Sharing requires a [Pro subscription](/plans). Free accounts cannot send or manage share invites.
+  Sending shares requires a [Pro subscription](/plans). Accepting a share does not.
 </Note>
+
+## Before you share
+
+- Add the person on the [Teams](/teams) page. They must accept the team invite before you can share with them.
+- The host must be synced. A host kept only on this computer shows **This host is only on this computer** in its **Sharing** tab. Click **Sync this host** first. See [Local hosts and sync](/hosts#local-hosts-and-sync).
 
 ## Share a host
 
-1. Right-click a host in the sidebar and select **Share**.
-2. Pick a recipient from your team roster.
-3. Click **Send invite**.
+1. Right-click a host in the host list and select **Share**. You can also click **Share host** in the host's detail page, or **Share** in its **Sharing** tab.
+2. The **Share host** dialog shows the host's **Address**, **User**, and **Auth**. Under **From your team**, click **Share** next to the person.
+3. Review the details. If the host connects through jump hosts, decide whether the recipient may also [connect to them directly](#jump-hosts).
+4. Click **Share host**.
 
-If the person you want to share with isn't on your team yet, add them from the [Teams page](/teams) first, then come back to share.
+<Frame>
+  <img src="/images/share-dialog.png" alt="Share host dialog with the host summary, the From your team list with one invite pending, and the command logging note" />
+</Frame>
 
-The invite is sent through the API backend. The host payload is encrypted before it is stored.
+In the team list, a person who already has access shows **Shared**. A person with an open invite shows **invite pending** and can't be picked again.
 
-## Accept or decline an invite
+If command logging is off for the host, the dialog says so and offers **Turn on**, so you keep an audit trail of what everyone runs. See [Command logs](/command-logs).
 
-Pending invites don't sit in your host list waiting for you. Click the bell icon in the sidebar: it shows a count of pending invites and opens a dialog to accept or decline each one.
+## Jump hosts
 
-Accepting an invite:
-1. Downloads the encrypted host payload.
-2. Decrypts it using the sharing key.
-3. Re-encrypts the credential with your DEK.
-4. Saves the host to your local list, tagged as shared.
+If the host connects through one or more jump hosts, Termique shares the whole chain with it, so the recipient gets a working connection without extra setup. The host's **Sharing** tab names the chain, for example `bastion → app-01`.
 
-Declining rejects the invite. The host is not added.
+By default, the recipient can only tunnel through the jump hosts. They don't appear in the recipient's host list and the recipient can't connect to them on their own. To allow that:
 
-## Command log consent
+- When sharing, check **Also let `<email>` connect directly to `<chain>`.**
+- After sharing, use the switch next to the recipient in the host's **Sharing** tab.
 
-If the host owner has command logging enabled, the accept dialog asks you to confirm before you continue. Accepting means your session activity on that host is recorded and visible to the owner.
+## Accept or decline a share
 
-## Keeping a share up to date
+When someone shares a host with you, Termique sends a **New host share invite** notification, and the bell in the tab bar shows a count of pending invites. Click the bell to open **Shared with me**.
 
-If the owner changes a shared host's credential, address, or username, every existing share of that host is updated automatically. You never need to be re-invited just because the owner rotated a password.
+Each invite shows the host, who it's from, its address, how it authenticates, and any jump host. Before you accept, check **I understand and accept activity logging**. The invite explains that commands you run on the host are logged and visible to the owner and other recipients.
+
+- Click **Accept** to add the host to your host list.
+- Click **Decline** to refuse it. Nothing is added.
+
+With several pending invites, click **Open all** to work through them in one dialog.
+
+<Frame>
+  <img src="/images/share-invite.png" alt="Shared with me popover with one pending invite, the activity logging notice, the consent checkbox, and Accept and Decline buttons" />
+</Frame>
+
+When you accept, Termique opens the shared credential on your device and stores it in your vault, encrypted with your own DEK. The host appears in your host list marked as shared. Shared jump hosts you are allowed to use directly appear as hosts too. You also see the host's [monitoring](/monitoring) data.
+
+Hosts shared with you are listed on the **Teams** page under **Shared with me**.
+
+## Working on a shared host
+
+- The host's **Sharing** tab shows **Shared with you by `<email>`**. Only the owner can share it further or manage access.
+- The first time you open a session on a shared host in each app launch, Termique reminds you that commands you type are visible to the owner and everyone the host is shared with. Click **Don't show again for this host** to stop the reminder.
+- If the owner changes the host's address, username, or credential, your copy updates automatically. This includes credentials of shared jump hosts. You never need a new invite because the owner rotated a password.
+
+## Manage access
+
+Open the host's detail page and select the **Sharing** tab. It lists everyone you shared the host with, their status, and when the host was last connected and by whom.
+
+| Status | Meaning |
+|--------|---------|
+| **Pending** | Invite sent, not yet answered |
+| **Active** | The recipient accepted and can connect |
+
+If the recipient declines the invite or later removes the host, they drop off the list. Share the host again to send a new invite.
 
 ## Revoke access
 
-If you shared a host, open the host's **Sharing** tab and find the recipient. Click the trash icon to revoke. The recipient's local copy of the host is not automatically removed from their device, only their access to it.
+1. In the host's **Sharing** tab, click the trash icon next to the recipient.
+2. Confirm **Revoke access for `<email>`?** by clicking **Revoke**.
 
-A revoked invite cannot be turned back on by the recipient. If you want to share with them again, send a new invite.
+The recipient loses access right away. Their copy of the host, and any jump hosts that came with it, is removed from their host list the next time their app checks for shares. Command log entries already recorded stay in the host's log.
 
-## Limitations
+<Warning>
+  Revoking removes the credential from Termique on the recipient's side. It does not change the credential on the server. To be certain the person can no longer log in, rotate the host's password or key after revoking.
+</Warning>
 
-- You can share a host you own. You cannot re-share a host that was shared with you.
-- There is no permission level. A shared host gives the recipient full connect access.
+To remove someone from every host you shared with them at once, revoke them from the [Teams](/teams#revoke-a-teammate) page.
+
+A revoked share cannot be turned back on. To share with that person again, send a new share. They have to accept it again.
+
+## Leave a shared host
+
+To give up access to a host shared with you, right-click it in the host list and select **Remove shared**. Confirm **Leave shared host** by clicking **Remove**. The share disappears from the owner's list. You need a new invite to get access again.
+
+## Limits
+
+- You can share only hosts you own. You cannot re-share a host that was shared with you.
+- There are no permission levels. A shared host gives the recipient full connect access.
+- Each person you share with uses one of your recipient slots, however many hosts you share with them. See [Teams](/teams#recipient-slots).
+- Open host invites are capped at twice your number of recipient slots. If you reach the cap, Termique shows **Too many invitations are still waiting to be accepted. Withdraw some first.**
+- There is a daily limit on invites. When you reach it, Termique shows **Daily invite limit reached. Try again tomorrow.**
+- If a subscription payment fails, you can't send new shares. Termique shows **New shares are paused while a payment is outstanding. Existing shares keep working.** Existing shares are suspended if the payment is still outstanding after 14 days, and resume once it goes through.
