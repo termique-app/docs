@@ -21,7 +21,7 @@ You can start an investigation from three places:
 
 - **Investigations** in the sidebar. Pick hosts with the host picker next to the search field, then click **Investigate**. The page also lists open investigations and past reports.
 - A host's detail page. Click **Investigate this host** in the side panel. It appears when the host's agent is reporting.
-- The **Monitoring** page. Click **Generate report** in the header, select a host, and click **Start investigation**.
+- The **Monitoring** page. Click **Generate report** in the header, select a host and a **Time window**, and click **Start investigation**. The window you pick is preselected under **When did it start?**. **7 days** opens as **Pick a time**, set to a week ago.
 
 <Frame>
   <img src="/images/investigations.png" alt="Investigations page with the describe-a-problem field, host picker, and a list of open investigations and reports" />
@@ -37,7 +37,7 @@ A new investigation opens on **What happened?**
 The assistant focuses metrics, logs, and the report timeline on that window. The case file on the right shows it as **Incident** `since <time>`.
 
 <Note>
-  If you type a description on the Investigations page before clicking **Investigate**, the investigation starts right away, without an incident window. Leave the field empty to set the window first.
+  If you type a description on the Investigations page before clicking **Investigate**, the investigation starts right away with the last hour as its incident window. Leave the field empty to pick the window first.
 </Note>
 
 ## How it works
